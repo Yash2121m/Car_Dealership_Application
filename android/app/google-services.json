@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "575931384947",
+    "project_id": "cardealer-187bf",
+    "storage_bucket": "cardealer-187bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575931384947:android:1c8c58d197b021d6615606",
+        "android_client_info": {
+          "package_name": "com.example.cardealer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYGF42sUkz9hUfPaS1hq5aYhSZ1VE63Q0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
