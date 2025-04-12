@@ -133,6 +133,4 @@ Bookings: {
 | 🎯 Dart | Programming language |
 | 🔥 Firebase | Auth, Realtime Database |
 | 📦 Provider / Riverpod | State management |
-| 🌍 Geolocator | Location access (optional) |
-| 🧠 TensorFlow | AI Recommendations (future) |
 
