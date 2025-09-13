@@ -1,8 +1,24 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+
+
     <application
-        android:label="cardealer"
+        android:label="AutoVerse"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name="com.razorpay.CheckoutActivity"
+            android:exported="true"
+            tools:replace="android:exported" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

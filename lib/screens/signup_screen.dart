@@ -7,15 +7,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:cardealer/global/global.dart';
 import 'package:cardealer/screens/main_page.dart';
+import 'package:animate_do/animate_do.dart';
 
-class SignupScreen extends StatefulWidget{
+import '../Assistance/ColorHelper.dart';
+
+class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen>{
+class _SignupScreenState extends State<SignupScreen> {
   final nameTextEditingController = TextEditingController();
   final emailTextEditingController = TextEditingController();
   final phoneTextEditingController = TextEditingController();
@@ -24,54 +27,59 @@ class _SignupScreenState extends State<SignupScreen>{
   final confirmpasswordTextEditingController = TextEditingController();
 
   bool passwordVisible = false;
-
   final form = GlobalKey<FormState>();
-
   Key? get key => null;
 
-  void submit() async{
-    //Validate all the form fields
-    if(form.currentState!.validate()) {
-      await firebaseAuth.createUserWithEmailAndPassword(
+  void submit() async {
+    if (form.currentState!.validate()) {
+      await firebaseAuth
+          .createUserWithEmailAndPassword(
           email: emailTextEditingController.text.trim(),
-          password: passwordTextEditingController.text.trim()
-      ).then((auth) async {
+          password: passwordTextEditingController.text.trim())
+          .then((auth) async {
         currentUser = auth.user;
 
-        if(currentUser != null){
-          Map userMap = {
-            "id" : currentUser!.uid,
-            "name" : nameTextEditingController.text.trim(),
-            "email" : emailTextEditingController.text.trim(),
-            "phone" : phoneTextEditingController.text.trim(),
-            "address" : addressTextEditingController.text.trim(),
-          };
-          
-          DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
-          userRef.child(currentUser!.uid).set(userMap);
+        if (currentUser != null) {
+          // Send email verification
+          await currentUser!.sendEmailVerification();
 
+          // Save user data
+          Map userMap = {
+            "id": currentUser!.uid,
+            "name": nameTextEditingController.text.trim(),
+            "email": emailTextEditingController.text.trim(),
+            "phone": phoneTextEditingController.text.trim(),
+            "address": addressTextEditingController.text.trim(),
+          };
+
+          DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child("users");
+          await userRef.child(currentUser!.uid).set(userMap);
+
+          Fluttertoast.showToast(
+              msg:
+              "Verification email sent! Please verify before logging in.");
+
+          await firebaseAuth.signOut();
+
+          // Redirect to login screen
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (c) => const LoginScreen()));
         }
-        await Fluttertoast.showToast(msg: "Succressfully Registered");
-        Navigator.push(context, MaterialPageRoute(builder: (c) => MainScreen(key)));
-      }
-      ).catchError((errorMessage){
-        Fluttertoast.showToast(msg: "Error Occured: \n $errorMessage");
+      }).catchError((errorMessage) {
+        Fluttertoast.showToast(msg: "Error Occurred: \n $errorMessage");
       });
-    }
-    else{
+    } else {
       Fluttertoast.showToast(msg: "Not all fields are Valid");
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool darkTheme = false;
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
@@ -80,341 +88,162 @@ class _SignupScreenState extends State<SignupScreen>{
           children: [
             Column(
               children: [
-                Image.asset(darkTheme ? 'images/Dark.jpg' : 'images/light.jpg', height: 200, width: 200,),
-
-                SizedBox(height: 20 ,),
-
-                Text("Register",
-                  style: TextStyle(
-                    color: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue ,
-                    fontSize:  25,
-                    fontWeight: FontWeight.bold,
+                Image.asset(
+                  darkTheme ? 'images/Dark.jpg' : 'images/light_1.png',
+                  height: 200,
+                  width: 200,
                 ),
+                SizedBox(height: 20),
+                FadeInUp(
+                  duration: Duration(milliseconds: 800),
+                  child: Text(
+                    "Register",
+                    style: TextStyle(
+                      color: darkTheme
+                          ? Colors.purpleAccent.shade100
+                          : ColorSys.purple2,
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.fromLTRB(15, 20, 15, 50),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Form(
-                        key: form,
+                      FadeInUp(
+                        duration: Duration(milliseconds: 1000),
+                        child: Form(
+                          key: form,
                           child: Column(
-                            mainAxisAlignment:  MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              TextFormField(
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50),
-                                ],
-                                decoration:  InputDecoration(
-                                  hintText: "Name",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                    borderSide: BorderSide(
-                                      width: 0,
-                                      style: BorderStyle.none,
-                                    )
-                                  ),
-                                  prefixIcon: Icon(Icons.person, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,),
-                                ),
-                                autovalidateMode:  AutovalidateMode.onUserInteraction,
-                                validator: (text) {
-                                  if(text == null || text.isEmpty){
-                                    return "Name can't be Empty";
-                                  }
-                                  if(text.length < 2) {
-                                    return "Please enter a valid Name";
-                                  }
-                                  if(text.length > 49){
-                                    return "Name can't be more than 50";
-                                  }
-                                },
-                                onChanged: (text) => setState(() {
-                                  nameTextEditingController.text = text;
-                                }
-                                ),
+                              buildTextField(
+                                controller: nameTextEditingController,
+                                hint: "Name",
+                                icon: Icons.person,
+                                validator: (text) =>
+                                    _validateText(text, 50, "Name"),
                               ),
-                              SizedBox(height: 10,),
-
-                              TextFormField(
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(100),
-                                ],
-                                decoration:  InputDecoration(
-                                  hintText: "E-mail",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                      borderSide: BorderSide(
-                                        width: 0,
-                                        style: BorderStyle.none,
-                                      )
-                                  ),
-                                  prefixIcon: Icon(Icons.email, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,),
-                                ),
-                                autovalidateMode:  AutovalidateMode.onUserInteraction,
-                                validator: (text) {
-                                  if(text == null || text.isEmpty){
-                                    return "E-mail can't be Empty";
-                                  }
-                                  if(EmailValidator.validate(text) == true) {
-                                    return null;
-                                  }
-                                  if(text.length < 2) {
-                                    return "Please enter a valid E-mail";
-                                  }
-                                  if(text.length > 99){
-                                    return "E-mail can't be more than 100";
-                                  }
-                                },
-                                onChanged: (text) => setState(() {
-                                  emailTextEditingController.text = text;
-                                }
-                                ),
+                              SizedBox(height: 10),
+                              buildTextField(
+                                controller: emailTextEditingController,
+                                hint: "E-mail",
+                                icon: Icons.email,
+                                validator: _validateEmail,
                               ),
-                              SizedBox(height: 10,),
-                              
+                              SizedBox(height: 10),
                               IntlPhoneField(
                                 showCountryFlag: true,
-                                dropdownIcon: Icon(Icons.arrow_drop_down,
-                                  color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,
+                                dropdownIcon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: darkTheme
+                                      ? Colors.purpleAccent.shade100
+                                      : Colors.grey,
                                 ),
-                               decoration: InputDecoration(
-                                 hintText: "Phone No.",
-                                 hintStyle: TextStyle(
-                                   color: Colors.grey,
-                                 ),
-                                 filled: true,
-                                 fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                 border: OutlineInputBorder(
-                                     borderRadius: BorderRadius.circular(40),
-                                     borderSide: BorderSide(
-                                       width: 0,
-                                       style: BorderStyle.none,
-                                     )
-                                 ),
-                               ),
+                                decoration:
+                                _inputDecoration("Phone No.", darkTheme),
                                 onChanged: (text) => setState(() {
-                                  phoneTextEditingController.text = text.completeNumber;
+                                  phoneTextEditingController.text =
+                                      text.completeNumber;
                                 }),
                               ),
-                              SizedBox(height: 10,),
-
-                              TextFormField(
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(100),
-                                ],
-                                decoration:  InputDecoration(
-                                  hintText: "Address",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                      borderSide: BorderSide(
-                                        width: 0,
-                                        style: BorderStyle.none,
-                                      )
-                                  ),
-                                  prefixIcon: Icon(Icons.home, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,),
-                                ),
-                                autovalidateMode:  AutovalidateMode.onUserInteraction,
-                                validator: (text) {
-                                  if(text == null || text.isEmpty){
-                                    return "Address can't be Empty";
-                                  }
-                                  if(text.length < 2) {
-                                    return "Please enter a valid Address";
-                                  }
-                                  if(text.length > 99){
-                                    return "Address can't be more than 100";
-                                  }
-                                },
-                                onChanged: (text) => setState(() {
-                                  addressTextEditingController.text = text;
-                                }
-                                ),
+                              SizedBox(height: 10),
+                              buildTextField(
+                                controller: addressTextEditingController,
+                                hint: "Address",
+                                icon: Icons.home,
+                                validator: (text) =>
+                                    _validateText(text, 100, "Address"),
                               ),
-                              SizedBox(height: 10,),
-
-                              TextFormField(
-                                obscureText: passwordVisible,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50),
-                                ],
-                                decoration:  InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                      borderSide: BorderSide(
-                                        width: 0,
-                                        style: BorderStyle.none,
-                                      )
-                                  ),
-                                  prefixIcon: Icon(Icons.password, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                      color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        passwordVisible =! passwordVisible;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                autovalidateMode:  AutovalidateMode.onUserInteraction,
-                                validator: (text) {
-                                  if(text == null || text.isEmpty){
-                                    return "Password can't be Empty";
-                                  }
-                                  if(text.length < 2) {
-                                    return "Please enter a valid Password";
-                                  }
-                                  if(text.length > 49){
-                                    return "Password can't be more than 50";
-                                  }
-                                  return null;
-                                },
-                                onChanged: (text) => setState(() {
-                                  passwordTextEditingController.text = text;
-                                }
-                                ),
+                              SizedBox(height: 10),
+                              buildTextField(
+                                controller: passwordTextEditingController,
+                                hint: "Password",
+                                icon: Icons.password,
+                                obscure: passwordVisible,
+                                isPassword: true,
                               ),
-                              SizedBox(height: 10,),
-
-                              TextFormField(
-                                obscureText: passwordVisible,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50),
-                                ],
-                                decoration:  InputDecoration(
-                                  hintText: "Confirm Password",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                  filled: true,
-                                  fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(40),
-                                      borderSide: BorderSide(
-                                        width: 0,
-                                        style: BorderStyle.none,
-                                      )
-                                  ),
-                                  prefixIcon: Icon(Icons.password, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                      color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        passwordVisible =! passwordVisible;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                autovalidateMode:  AutovalidateMode.onUserInteraction,
+                              SizedBox(height: 10),
+                              buildTextField(
+                                controller: confirmpasswordTextEditingController,
+                                hint: "Confirm Password",
+                                icon: Icons.password,
+                                obscure: passwordVisible,
+                                isPassword: true,
                                 validator: (text) {
-                                  if(text == null || text.isEmpty){
-                                    return "Password can't be Empty";
-                                  }
-                                  if(text != passwordTextEditingController.text){
+                                  if (text !=
+                                      passwordTextEditingController.text) {
                                     return "Password do not Match";
                                   }
-                                  if(text.length < 2) {
-                                    return "Please enter a valid Password";
-                                  }
-                                  if(text.length > 49){
-                                    return "Password can't be more than 50";
-                                  }
-                                  return null;
+                                  return _validateText(text, 50, "Password");
                                 },
-                                onChanged: (text) => setState(() {
-                                  confirmpasswordTextEditingController.text = text;
-                                }
+                              ),
+                              SizedBox(height: 10),
+                              FadeInUp(
+                                delay: Duration(milliseconds: 400),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    darkTheme ? Colors.black : Colors.white,
+                                    foregroundColor: darkTheme
+                                        ? Colors.purpleAccent.shade100
+                                        : ColorSys.purple2,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                    minimumSize: Size(300, 50),
+                                  ),
+                                  onPressed: submit,
+                                  child: Text("Register",
+                                      style: TextStyle(fontSize: 20)),
                                 ),
                               ),
-                              SizedBox(height: 10,),
-
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: darkTheme ? Colors.black : Colors.white,
-                                  foregroundColor: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(32),
-                                  ),
-                                  minimumSize: Size(300, 50),
-                                ),
-                                onPressed: (){
-                                  submit();
-                              },
-                                child: Text("Register",
-                                  style: TextStyle(
-                                      fontSize: 20
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(height: 20,),
-
+                              SizedBox(height: 20),
                               GestureDetector(
-                                onTap: (){
-                                },
-                                child: Text("Forgot Password",
+                                onTap: () {},
+                                child: Text(
+                                  "Forgot Password",
                                   style: TextStyle(
-                                    color: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
+                                    color: darkTheme
+                                        ? Colors.purpleAccent.shade100
+                                        : ColorSys.purple2,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 20,),
-
+                              SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Have an Account",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15,
-                                    ),
+                                  Text(
+                                    "Have an Account",
+                                    style:
+                                    TextStyle(color: Colors.grey, fontSize: 15),
                                   ),
-                                  SizedBox(width: 5,),
+                                  SizedBox(width: 5),
                                   GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (c) => LoginScreen()));
-                                    },
-                                    child:  Text(
+                                    onTap: () => Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (c) => LoginScreen())),
+                                    child: Text(
                                       "Sign In",
                                       style: TextStyle(
                                         fontSize: 15,
-                                        color: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
+                                        color: darkTheme
+                                            ? Colors.purpleAccent.shade100
+                                            : ColorSys.purple2,
                                       ),
                                     ),
                                   )
                                 ],
                               ),
                             ],
-                          )
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -424,6 +253,74 @@ class _SignupScreenState extends State<SignupScreen>{
           ],
         ),
       ),
+    );
+  }
+
+  String? _validateText(String? text, int maxLength, String fieldName) {
+    if (text == null || text.isEmpty) return "$fieldName can't be Empty";
+    if (text.length < 2) return "Please enter a valid $fieldName";
+    if (text.length > maxLength) return "$fieldName can't be more than $maxLength";
+    return null;
+  }
+
+  String? _validateEmail(String? text) {
+    if (text == null || text.isEmpty) return "E-mail can't be Empty";
+    if (EmailValidator.validate(text)) return null;
+    if (text.length < 2) return "Please enter a valid E-mail";
+    if (text.length > 99) return "E-mail can't be more than 100";
+    return "Invalid email format";
+  }
+
+  InputDecoration _inputDecoration(String hint, bool darkTheme) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: Colors.grey),
+      filled: true,
+      fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(40),
+        borderSide: BorderSide(width: 0, style: BorderStyle.none),
+      ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    bool obscure = false,
+    bool isPassword = false,
+    String? Function(String?)? validator,
+  }) {
+    bool darkTheme = false;
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword ? obscure : false,
+      inputFormatters: [LengthLimitingTextInputFormatter(100)],
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey),
+        filled: true,
+        fillColor: darkTheme ? Colors.grey.shade900 : Colors.grey.shade200,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(40),
+          borderSide: BorderSide(width: 0, style: BorderStyle.none),
+        ),
+        prefixIcon:
+        Icon(icon, color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey),
+        suffixIcon: isPassword
+            ? IconButton(
+          icon: Icon(
+            obscure ? Icons.visibility : Icons.visibility_off,
+            color: darkTheme ? Colors.purpleAccent.shade100 : Colors.grey,
+          ),
+          onPressed: () => setState(() => passwordVisible = !passwordVisible),
+        )
+            : null,
+      ),
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: validator ?? (text) => _validateText(text, 100, hint),
+      onChanged: (text) => setState(() {}),
     );
   }
 }

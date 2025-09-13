@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.5.1+1
 
 environment:
   sdk: ^3.6.0
@@ -45,11 +45,38 @@ dependencies:
   fluttertoast: ^8.1.2
   get: ^4.6.6
   carousel_slider: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+  rename: ^3.1.0
+  animate_do: ^4.2.0
+  image_picker: ^1.1.0
+  http: ^1.4.0
+  intl: ^0.20.2
+  razorpay_flutter: ^1.3.5
+  pdf: ^3.10.6
+  printing: ^5.12.0
+  flutter_local_notifications: ^19.3.0
+  timezone: ^0.10.1
+  flutter_chat_ui: ^1.6.7
+  flutter_chat_types: ^3.6.1
+  uuid: ^4.1.0
+  fl_chart: ^0.69.0
+  lottie: ^3.1.0
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path_android: "images/logo3.png"
+  image_path_ios: "images/logo3.png"
+  adaptive_icon_background: "#ffffff"  # or a transparent image path
+  adaptive_icon_foreground: "images/logo3.png"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -72,6 +99,42 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
+    - images/Travel_app.json
+    - images/Car_Engine_Pouring_Oil_1.json
+    - images/SUV/Jaecoo_7/
+    - images/SUV/Dacia_Duster/
+    - images/SUV/Ford_Explorer/
+    - images/SUV/Nissan_Qashqai/
+    - images/SUV/Renault_Rafale/
+    - images/SUV/BMW_X5_G05/
+    - images/SUV/Mercedes_G_W463/
+    - images/SUV/Mercedes_GLS_X167/
+    - images/SUV/Volkswagen_Touareg/
+    - images/Convertible/BMW_4/
+    - images/Convertible/Ford_Mustang/
+    - images/Convertible/Mazda_MX_5/
+    - images/Convertible/Mercedes_SL/
+    - images/Convertible/Porsche_718/
+    - images/Sedan/Hyundai_i30/
+    - images/Sedan/Hyundai_Ioniq_6/
+    - images/Sedan/Nio_ET7/
+    - images/Sedan/Skoda_Octavia/
+    - images/Sedan/Toyota_Camry/
+    - images/Sedan/Volvo_S90/
+    - images/Sedan/BMW_2_F44/
+    - images/Sedan/BMW_5_G60/
+    - images/Sedan/BMW_7_G70/
+    - images/Hatchback/Cupra_Leon/
+    - images/Hatchback/Dacia_Spring/
+    - images/Hatchback/Skoda_Scala/
+    - images/Hatchback/Suzuki_Swift/
+    - images/Hatchback/Volkswagen_Golf/
+    - images/Coupe/BMW_i8/
+    - images/Coupe/Dodge_Challenger/
+    - images/Coupe/Ford_Mustang/
+    - images/Coupe/McLaren_720S/
+    - images/Coupe/Porsche_911/
+    - images/accessories/
 
   # assets:
   #   - images/a_dot_burr.jpeg

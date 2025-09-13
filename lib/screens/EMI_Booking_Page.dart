@@ -1,3 +1,4 @@
+import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../Model/Car_Mode.dart';
@@ -152,7 +153,34 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
     int interestAmount = totalAmount - loanAmount.round();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('EMI Booking')),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [ColorSys.purple1, ColorSys.purple2],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius:
+            const BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: AppBar(
+            title: const Text("EMI Calculator",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -171,7 +199,7 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
                         value: loanAmount / totalAmount,
                         strokeWidth: 14,
                         backgroundColor: Colors.grey.shade300,
-                        valueColor: AlwaysStoppedAnimation(Colors.purpleAccent),
+                        valueColor: AlwaysStoppedAnimation(ColorSys.purple2),
                       ),
                     ),
                     Column(
@@ -191,40 +219,9 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text('₹ ${calculateEMI()}/mo',
+              Text('₹ ${calculateEMI()}/month',
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              DropdownButton<String>(
-                value: selectedAddress,
-                hint: const Text("Select Address"),
-                items: savedAddresses.map((address) {
-                  return DropdownMenuItem(
-                    value: address,
-                    child: Text(address),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedAddress = value!;
-                  });
-                },
-              ),
-              SwitchListTile(
-                title: const Text("Use Saved Address"),
-                value: useSavedAddress,
-                onChanged: (value) {
-                  setState(() {
-                    useSavedAddress = value;
-                    if (value) {
-                      selectedAddress = registeredAddress;
-                    }
-                  });
-                },
-              ),
-              if (!useSavedAddress)
-                TextField(
-                  controller: _alternateAddressController,
-                  decoration: const InputDecoration(labelText: "Enter New Address"),
-                ),
+              SizedBox(height: 20,),
               _buildSlider('Rate of Interest', interestRate, 1, 15, (value) {
                 setState(() => interestRate = value);
               }, isPercentage: true),
@@ -232,10 +229,7 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
                 setState(() => loanTenure = value.toInt());
               }, isPercentage: false),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: saveEMIToFirebase,
-                child: const Text('Confirm EMI Booking'),
-              ),
+
               const SizedBox(height: 20),
             ],
           ),

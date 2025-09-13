@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '575931384947',
     projectId: 'cardealer-187bf',
     authDomain: 'cardealer-187bf.firebaseapp.com',
+    databaseURL: 'https://cardealer-187bf-default-rtdb.firebaseio.com',
     storageBucket: 'cardealer-187bf.firebasestorage.app',
     measurementId: 'G-RTNPCQCGT5',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:575931384947:android:1c8c58d197b021d6615606',
     messagingSenderId: '575931384947',
     projectId: 'cardealer-187bf',
+    databaseURL: 'https://cardealer-187bf-default-rtdb.firebaseio.com',
     storageBucket: 'cardealer-187bf.firebasestorage.app',
   );
 
@@ -63,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:575931384947:ios:5dbcb172bef4d4ca615606',
     messagingSenderId: '575931384947',
     projectId: 'cardealer-187bf',
+    databaseURL: 'https://cardealer-187bf-default-rtdb.firebaseio.com',
     storageBucket: 'cardealer-187bf.firebasestorage.app',
     iosBundleId: 'com.example.cardealer',
   );
@@ -72,6 +75,7 @@ class DefaultFirebaseOptions {
     appId: '1:575931384947:ios:5dbcb172bef4d4ca615606',
     messagingSenderId: '575931384947',
     projectId: 'cardealer-187bf',
+    databaseURL: 'https://cardealer-187bf-default-rtdb.firebaseio.com',
     storageBucket: 'cardealer-187bf.firebasestorage.app',
     iosBundleId: 'com.example.cardealer',
   );
@@ -82,7 +86,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '575931384947',
     projectId: 'cardealer-187bf',
     authDomain: 'cardealer-187bf.firebaseapp.com',
+    databaseURL: 'https://cardealer-187bf-default-rtdb.firebaseio.com',
     storageBucket: 'cardealer-187bf.firebasestorage.app',
     measurementId: 'G-LS0ZJQFNSN',
   );
+
 }

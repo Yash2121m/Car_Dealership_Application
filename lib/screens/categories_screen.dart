@@ -1,103 +1,167 @@
+import 'dart:ui';
+import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:flutter/material.dart';
-
 import '../Model/Car.dart';
-import 'Car_List_Screen.dart'; // Import car data models
+import 'Car_List_Screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const first = Color(0xffffcf03);
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool darkTheme = false;
 
-    // List of categories with titles, image paths, and corresponding car lists
     final List<Map<String, dynamic>> categories = [
-      {'title': 'Sedan', 'image': 'images/sedan_logo.png', 'cars': sedanCars},
-      {'title': 'SUV', 'image': 'images/suv_logo.png', 'cars': suvCars},
-      {'title': 'Sports', 'image': 'images/sportscar_logo.png', 'cars': sportsCars},
-      {'title': 'Luxurious', 'image': 'images/luxoury_logo.jpg', 'cars': luxuryCars},
-      {'title': 'Offroad', 'image': 'images/off_road_logo.png', 'cars': offroadCars},
+      {'title': 'Sedan', 'subtitle': 'Comfort & Style', 'image': 'images/sedan_logo.png', 'cars': sedanCars},
+      {'title': 'SUV', 'subtitle': 'Power & Space', 'image': 'images/suv_logo_1.png', 'cars': suvCars},
+      {'title': 'Coupe', 'subtitle': 'Sporty & Sleek', 'image': 'images/sportscar_logo.png', 'cars': Coupe},
+      {'title': 'Hatchback', 'subtitle': 'Compact & Smart', 'image': 'images/hatchback_logo1.png', 'cars': Hatchback},
+      {'title': 'Convertible', 'subtitle': 'Luxury & Fun', 'image': 'images/convertible_logo.png', 'cars': Convertible},
     ];
 
     return Scaffold(
-      backgroundColor: darkTheme ? Colors.black87 : Colors.grey.shade100,
-      appBar: AppBar(
-        title: const Text(
-          "Categories",
-          style: TextStyle(color: Colors.white),
-        ),
-        flexibleSpace: Container(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: darkTheme
-                  ? [Colors.grey.shade800, Colors.black]
-                  : [Colors.blue.shade300, Colors.blueAccent],
+              colors: [ColorSys.purple1, ColorSys.purple2],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+            borderRadius:
+            const BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: AppBar(
+            title: const Text("Car Categories",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
         ),
-        elevation: 4,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(12),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return GestureDetector(
-            onTap: () {
-              // Navigate to CarListScreen and pass the selected car list
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarListScreen(cars: category['cars']),
-                ),
-              );
-            },
-            child: Card(
-              color: Colors.white,
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              margin: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Image Section
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                    child: Image.asset(
-                      category['image'] as String, // Explicit type cast to String
-                      fit: BoxFit.cover,
-                      height: 200,
-                    ),
-                  ),
-                  // Title Section
-                  Container(
-                    padding: const EdgeInsets.all(16),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 600),
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            CarListScreen(cars: category['cars']),
+                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                          final fade = Tween(begin: 0.0, end: 1.0).animate(animation);
+                          final scale = Tween(begin: 0.9, end: 1.0)
+                              .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutBack));
+                          return FadeTransition(
+                            opacity: fade,
+                            child: ScaleTransition(scale: scale, child: child),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.purpleAccent.shade100, Colors.blueAccent],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+                      borderRadius: BorderRadius.circular(28),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      category['title'] as String, // Explicit type cast to String
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: darkTheme ? Colors.black : Colors.grey.shade200,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: Stack(
+                        children: [
+                          Hero(
+                            tag: category['title'],
+                            child: Image.asset(
+                              category['image'],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 220,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black.withOpacity(0.6),
+                                    Colors.transparent
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 20,
+                            left: 20,
+                            right: 20,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  color: Colors.black.withOpacity(0.3),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        category['title'],
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        category['subtitle'],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          SizedBox(height: 50,)
+        ],
       ),
     );
   }

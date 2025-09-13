@@ -1,9 +1,11 @@
+import 'dart:ui';
+import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:cardealer/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:cardealer/global/global.dart';
 import 'package:cardealer/Model/user_model.dart';
+import 'package:lottie/lottie.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -14,6 +16,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   UserModel? userModel;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
 
   @override
   void initState() {
@@ -22,8 +26,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void fetchUserProfile() async {
-    DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users").child(currentUser!.uid);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
 
+    DatabaseReference userRef =
+    FirebaseDatabase.instance.ref().child("users").child(user.uid);
     userRef.once().then((snap) {
       if (snap.snapshot.value != null) {
         setState(() {
@@ -33,135 +40,275 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Widget buildDetailCard(String label, String value, bool darkTheme) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+  void showEditProfileDialog() {
+    nameController.text = userModel?.name ?? "";
+    addressController.text = userModel?.address ?? "";
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
+              color: Colors.white.withOpacity(0.9),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                left: 20,
+                right: 20,
+                top: 20,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade400,
+                        borderRadius: BorderRadius.circular(5)),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Edit Profile",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: addressController,
+                    decoration: InputDecoration(
+                      labelText: "Address",
+                      filled: true,
+                      fillColor: Colors.grey.shade100,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user == null) return;
+
+                      String newName = nameController.text.trim();
+                      String newAddress = addressController.text.trim();
+
+                      if (newName.isNotEmpty && newAddress.isNotEmpty) {
+                        DatabaseReference userRef = FirebaseDatabase.instance
+                            .ref()
+                            .child("users")
+                            .child(user.uid);
+
+                        await userRef.update({
+                          "name": newName,
+                          "address": newAddress,
+                        });
+
+                        Navigator.pop(context);
+                        fetchUserProfile();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorSys.purple1,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                    ),
+                    child: const Text(
+                      "Save Changes",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
               ),
             ),
-            Flexible(
-              child: Text(
-                value,
-                style: TextStyle(
-                  color: darkTheme ? Colors.white : Colors.black,
-                  fontSize: 16,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildDetailTile(String label, String value, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 4))
+        ],
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: ColorSys.purple1.withOpacity(0.15),
+            child: Icon(icon, color: ColorSys.purple1),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label,
+                    style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w500)),
+                const SizedBox(height: 5),
+                Text(value,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold)),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Profile",
-          style: TextStyle(color: Colors.white),
-        ),
-        flexibleSpace: Container(
+      backgroundColor: Colors.grey.shade100,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: darkTheme
-                  ? [Colors.grey.shade800, Colors.black]
-                  : [Colors.blue.shade300, Colors.blueAccent],
+              colors: [ColorSys.purple1, ColorSys.purple2],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+            borderRadius:
+            const BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: AppBar(
+            title: const Text("Profile",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.black87),
+                    onPressed: showEditProfileDialog),
+              ],
           ),
         ),
-        elevation: 4,
       ),
-      body: userModel == null ? const Center(child: CircularProgressIndicator())
-       : SingleChildScrollView(
+      body: user == null
+          ? const Center(
+          child: Text("User not signed in.",
+              style: TextStyle(color: Colors.black54)))
+          : userModel == null
+          ? Center(
+        child: Lottie.asset(
+          "images/Travel_app.json", // ✅ Your loader
+          width: 250,
+          height: 250,
+        ),
+      )
+          : SingleChildScrollView(
         child: Column(
           children: [
-            // Avatar Section
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: CircleAvatar(
-                radius: 50,
-                backgroundColor: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
-                child: Icon(
-                  Icons.person,
-                  size: 50,
-                  color: darkTheme ? Colors.black : Colors.white,
+            const SizedBox(height: 20),
+            // Profile Avatar with shadow
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorSys.purple1.withOpacity(0.4),
+                      blurRadius: 20,
+                      spreadRadius: 3,
+                    )
+                  ],
                 ),
-              ),
-            ),
-            // Profile Details Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  buildDetailCard("Name", userModel!.name ?? "N/A", darkTheme),
-                  buildDetailCard("Email", userModel!.email ?? "N/A", darkTheme),
-                  buildDetailCard("Phone", userModel!.phone ?? "N/A", darkTheme),
-                  buildDetailCard("Address", userModel!.address ?? "N/A", darkTheme),
-                ],
+                child: CircleAvatar(
+                  radius: 55,
+                  backgroundColor: ColorSys.purple1,
+                  child: const Icon(Icons.person,
+                      size: 60, color: Colors.white),
+                ),
               ),
             ),
             const SizedBox(height: 20),
-            // Sign Out Button
-            ElevatedButton(
+            // Profile Details
+            buildDetailTile(
+                "Name", userModel?.name ?? "N/A", Icons.person),
+            buildDetailTile(
+                "Email", userModel?.email ?? "N/A", Icons.email),
+            buildDetailTile(
+                "Phone", userModel?.phone ?? "N/A", Icons.phone),
+            buildDetailTile("Address",
+                userModel?.address ?? "N/A", Icons.location_on),
+            const SizedBox(height: 30),
+            // Sign out button
+            ElevatedButton.icon(
               onPressed: () async {
-                try {
-                  await FirebaseAuth.instance.signOut();
-                  // Navigate to login screen or landing page after signing out
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()), // Replace `MyHomePage` with your login screen widget
-                  );
-                } catch (e) {
-                  // Handle errors
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text("Error"),
-                      content: Text(e.toString()),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("OK"),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginScreen()),
+                );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: darkTheme ? Colors.purpleAccent.shade100 : Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              child: const Text(
+              icon: const Icon(Icons.logout, color: Colors.black),
+              label: const Text(
                 "Sign Out",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSys.purple1,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 60, vertical: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                elevation: 4,
               ),
             ),
+            const SizedBox(height: 100),
           ],
         ),
       ),
