@@ -30,7 +30,7 @@ class _ForgotpasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
 
-    bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    bool darkTheme = false;
 
     return GestureDetector(
       onTap: (){
@@ -42,7 +42,7 @@ class _ForgotpasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             Column(
               children: [
-                Image.asset(darkTheme ? 'images/Dark.jpg' : 'images/light.jpg', height: 200, width: 200,),
+                Image.asset(darkTheme ? 'images/Dark.jpg' : 'images/light_1.png', height: 200, width: 200,),
 
                 SizedBox(height: 20 ,),
 

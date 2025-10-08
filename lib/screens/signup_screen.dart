@@ -203,18 +203,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               SizedBox(height: 20),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  "Forgot Password",
-                                  style: TextStyle(
-                                    color: darkTheme
-                                        ? Colors.purpleAccent.shade100
-                                        : ColorSys.purple2,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
