@@ -56,6 +56,7 @@ class CategoryScreen extends StatelessWidget {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final category = categories[index];
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -66,8 +67,9 @@ class CategoryScreen extends StatelessWidget {
                             CarListScreen(cars: category['cars']),
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                           final fade = Tween(begin: 0.0, end: 1.0).animate(animation);
-                          final scale = Tween(begin: 0.9, end: 1.0)
-                              .animate(CurvedAnimation(parent: animation, curve: Curves.easeOutBack));
+                          final scale = Tween(begin: 0.95, end: 1.0).animate(
+                            CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+                          );
                           return FadeTransition(
                             opacity: fade,
                             child: ScaleTransition(scale: scale, child: child),
@@ -77,15 +79,16 @@ class CategoryScreen extends StatelessWidget {
                     );
                   },
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOut,
                     margin: const EdgeInsets.only(bottom: 24),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
+                          color: Colors.black.withOpacity(0.35),
+                          blurRadius: 25,
+                          offset: const Offset(0, 14),
                         ),
                       ],
                     ),
@@ -93,22 +96,32 @@ class CategoryScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(28),
                       child: Stack(
                         children: [
+                          /// 🚗 Car image with subtle purple tint
                           Hero(
                             tag: category['title'],
-                            child: Image.asset(
-                              category['image'],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 220,
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                Colors.purpleAccent.withOpacity(0.12),
+                                BlendMode.softLight,
+                              ),
+                              child: Image.asset(
+                                category['image'],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: 220,
+                              ),
                             ),
                           ),
+
+                          /// 🌒 Dark–to–transparent gradient overlay (for contrast)
                           Positioned.fill(
                             child: Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.6),
-                                    Colors.transparent
+                                    Colors.black.withOpacity(0.75),
+                                    Colors.black.withOpacity(0.25),
+                                    Colors.transparent,
                                   ],
                                   begin: Alignment.bottomCenter,
                                   end: Alignment.topCenter,
@@ -116,34 +129,111 @@ class CategoryScreen extends StatelessWidget {
                               ),
                             ),
                           ),
+
+                          /// ✨ Glass info panel with mirror shine
                           Positioned(
-                            bottom: 20,
-                            left: 20,
-                            right: 20,
+                            left: 16,
+                            right: 16,
+                            bottom: 18,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                                 child: Container(
-                                  padding: const EdgeInsets.all(14),
-                                  color: Colors.black.withOpacity(0.3),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.white.withOpacity(0.18),
+                                        Colors.white.withOpacity(0.05),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.white.withOpacity(0.45),
+                                    ),
+                                  ),
+                                  child: Stack(
                                     children: [
-                                      Text(
-                                        category['title'],
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                      /// mirror shine strip
+                                      Positioned(
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        height: 18,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.white.withOpacity(0.7),
+                                                Colors.white.withOpacity(0.05),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        category['subtitle'],
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white70,
+
+                                      /// content
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 10,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    category['title'],
+                                                    style: const TextStyle(
+                                                      fontSize: 22,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Colors.white.withOpacity(0.5),
+                                                        Colors.purpleAccent.withOpacity(0.6),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    "${(category['cars'] as List).length} cars",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              category['subtitle'],
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white70,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -160,9 +250,12 @@ class CategoryScreen extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 50,)
+
+          // spacing so it doesn't touch glossy bottom nav
+          const SizedBox(height: 50),
         ],
-      ),
+      )
+
     );
   }
 }

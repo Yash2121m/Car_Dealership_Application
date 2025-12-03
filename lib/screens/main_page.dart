@@ -51,23 +51,90 @@ class _MainScreenState extends State<MainScreen> {
       // Floating Action Button for Chat
       // Floating Action Button for Chat
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 70, right: 10), // adjust spacing above nav bar
-        child: FloatingActionButton(
-          backgroundColor: ColorSys.purple2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          child: Lottie.asset(
-            "images/Bot.json", // ✅ Your loader
-            width: 250,
-            height: 250,
+        padding: const EdgeInsets.only(bottom: 70, right: 10),
+        child: Container(
+          width: 65,
+          height: 65,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.purpleAccent.withOpacity(0.6),
+                blurRadius: 25,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatScreen()),
-            );
-          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(22),
+            child: Stack(
+              children: [
+                /// ✅ GLASS BLUR BACKGROUND
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(0.35),
+                          ColorSys.purple2.withOpacity(0.35),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.4),
+                      ),
+                    ),
+                  ),
+                ),
+
+                /// ✅ MIRROR SHINE ON TOP
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 18,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withOpacity(0.7),
+                          Colors.white.withOpacity(0.05),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                /// ✅ BUTTON TAP AREA + LOTTIE
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(22),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatScreen()),
+                      );
+                    },
+                    child: Center(
+                      child: Lottie.asset(
+                        "images/Bot.json",
+                        width: 60,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
 
@@ -75,82 +142,116 @@ class _MainScreenState extends State<MainScreen> {
       // Creative Bottom Nav
       bottomNavigationBar: Container(
         margin: const EdgeInsets.all(12),
+        height: 75,
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(25),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: BottomNavigationBar(
-              backgroundColor: Colors.white.withOpacity(0.2),
-              elevation: 0,
-              type: BottomNavigationBarType.fixed,
-              currentIndex: _selectedIndex,
-              onTap: _navigationBar,
-              selectedItemColor: Colors.purpleAccent,
-              unselectedItemColor: Colors.white70,
-              showUnselectedLabels: false,
-              items: [
-                BottomNavigationBarItem(
-                  icon: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == 0
-                          ? Colors.purpleAccent.withOpacity(0.2)
-                          : Colors.grey[400],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Icon(Icons.home),
+          borderRadius: BorderRadius.circular(30),
+          child: Stack(
+            children: [
+              /// ✅ BLUR GLASS BACKGROUND
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.12),
                   ),
-                  label: "Home",
                 ),
-                BottomNavigationBarItem(
-                  icon: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == 1
-                          ? Colors.purpleAccent.withOpacity(0.2)
-                          : Colors.grey[400],
-                      borderRadius: BorderRadius.circular(15),
+              ),
+
+              /// ✅ MIRROR GLOSS SHINE (TOP REFLECTION)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 25,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white.withOpacity(0.6),
+                        Colors.white.withOpacity(0.05),
+                      ],
                     ),
-                    child: const Icon(Icons.local_shipping_outlined),
                   ),
-                  label: "Orders",
                 ),
-                BottomNavigationBarItem(
-                  icon: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == 2
-                          ? Colors.purpleAccent.withOpacity(0.2)
-                          : Colors.grey[400],
-                      borderRadius: BorderRadius.circular(15),
+              ),
+
+              /// ✅ BOTTOM NAV BAR
+              BottomNavigationBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                type: BottomNavigationBarType.fixed,
+                currentIndex: _selectedIndex,
+                onTap: _navigationBar,
+                selectedItemColor: Colors.purpleAccent,
+                unselectedItemColor: Colors.white70,
+
+                showSelectedLabels: true,
+                showUnselectedLabels: false,
+                selectedFontSize: 12,
+                unselectedFontSize: 0,
+
+                items: List.generate(4, (index) {
+                  final icons = [
+                    Icons.home,
+                    Icons.local_shipping_outlined,
+                    Icons.category_sharp,
+                    Icons.person_2_rounded
+                  ];
+
+                  final labels = ["Home", "Orders", "Category", "Profile"];
+
+                  final isSelected = _selectedIndex == index;
+
+                  return BottomNavigationBarItem(
+                    label: isSelected ? labels[index] : "",
+                    icon: AnimatedScale(   // ✅ makes selected slightly bigger
+                      scale: isSelected ? 1.2 : 1.0,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.all(8), // ✅ slightly reduced to prevent overflow
+                        decoration: BoxDecoration(
+                          gradient: isSelected
+                              ? LinearGradient(
+                            colors: [
+                              Colors.white.withOpacity(0.45),
+                              Colors.purpleAccent.withOpacity(0.3),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                              : null,
+                          color: isSelected
+                              ? null
+                              : Colors.purpleAccent.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                        ),
+                        child: Icon(
+                          icons[index],
+                          size: isSelected ? 26 : 22, // ✅ selected bigger icon
+                        ),
+                      ),
                     ),
-                    child: const Icon(Icons.category_sharp),
-                  ),
-                  label: "Category",
-                ),
-                BottomNavigationBarItem(
-                  icon: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == 3
-                          ? Colors.purpleAccent.withOpacity(0.2)
-                          : Colors.grey[400],
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Icon(Icons.person_2_rounded),
-                  ),
-                  label: "Profile",
-                ),
-              ],
-            ),
+                  );
+                }),
+              ),
+            ],
           ),
         ),
       ),

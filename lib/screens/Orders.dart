@@ -3,7 +3,7 @@ import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:lottie/lottie.dart'; // ✅ Added
+import 'package:lottie/lottie.dart';
 import '../Model/Car.dart';
 import '../Model/Car_Mode.dart';
 import 'BookingDetailScreen.dart';

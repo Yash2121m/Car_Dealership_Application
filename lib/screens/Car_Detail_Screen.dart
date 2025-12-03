@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:cardealer/Model/AllCars.dart';
 import 'package:cardealer/screens/Car_Compare.dart';
@@ -5,7 +7,7 @@ import 'package:cardealer/screens/EMI_Booking_Page.dart';
 import 'package:cardealer/screens/Test_Drive_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:lottie/lottie.dart'; // ✅ Added
+import 'package:lottie/lottie.dart';
 import '../Model/Car_Mode.dart';
 import '../Model/Wishlist_Manager.dart';
 import 'Booking_Page.dart';
@@ -58,7 +60,6 @@ class _CarDetailScreenState extends State<CarDetailScreen>
             _controller
               ..duration = composition.duration
               ..repeat(period: composition.duration * 0.5);
-            // ✅ 0.5 → 2x speed, 0.25 → 4x speed
           },
         ),
       )
@@ -253,21 +254,51 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                       const SizedBox(height: 24),
 
                       // Specs
-                      const Text("Specifications",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      // Specs
+                      const Text(
+                        "Specifications",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 10),
-                      _specRow("Body Type", widget.car.bodyType),
-                      _specRow("Number of Doors",
-                          "${widget.car.numberOfDoors}"),
-                      _specRow("Length", "${widget.car.totalLength} mm"),
-                      _specRow("Width", "${widget.car.overallWidth} mm"),
-                      _specRow("Height", "${widget.car.overallHeight} mm"),
-                      _specRow("Wheelbase", "${widget.car.wheelbase} mm"),
-                      _specRow("Ground Clearance",
-                          "${widget.car.groundClearance} mm"),
-                      _specRow("Boot Capacity",
-                          "${widget.car.bootCapacity} L"),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                            decoration: BoxDecoration(
+                              // subtle frosted layer over your purple1
+                              color: Colors.white.withOpacity(0.50),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.55),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.18),
+                                  blurRadius: 14,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                _specRow("Body Type", widget.car.bodyType),
+                                _specRow("Number of Doors", "${widget.car.numberOfDoors}"),
+                                _specRow("Length", "${widget.car.totalLength} mm"),
+                                _specRow("Width", "${widget.car.overallWidth} mm"),
+                                _specRow("Height", "${widget.car.overallHeight} mm"),
+                                _specRow("Wheelbase", "${widget.car.wheelbase} mm"),
+                                _specRow("Ground Clearance", "${widget.car.groundClearance} mm"),
+                                _specRow("Boot Capacity", "${widget.car.bootCapacity} L"),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
 
                       const SizedBox(height: 26),
 
@@ -352,50 +383,109 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     );
   }
 
-  Widget _circleBtn(IconData icon, VoidCallback onTap,
-      {Color color = Colors.black}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration:
-        const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-        padding: const EdgeInsets.all(8),
-        child: Icon(icon, color: color, size: 22),
+  Widget _circleBtn(IconData icon, VoidCallback onTap, {Color color = Colors.black}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(50),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), // ⬅ stronger blur
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.7), // ⬅ less solid, more glass
+              border: Border.all(
+                color: Colors.white.withOpacity(0.9),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Icon(icon, color: color, size: 22),
+          ),
+        ),
       ),
     );
   }
 
+
   Widget _featureTile(IconData icon, String title, String value) {
-    return Container(
-      width: 105,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 26, color: Colors.deepPurple),
-          const SizedBox(height: 6),
-          Text(title,
-              style: const TextStyle(fontSize: 12, color: Colors.black54)),
-          Text(value,
-              style:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), // ⬅ stronger blur
+        child: Container(
+          width: 105,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            // same grey tone, just more transparent so background bleeds in
+            color: Colors.grey.shade200.withOpacity(0.65),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.8),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.18),
+                blurRadius: 10,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Icon(icon, size: 26, color: Colors.deepPurple),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+              Text(
+                value,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   Widget _specRow(String key, String value) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.white.withOpacity(0.08),
+          ),
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(key, style: const TextStyle(fontSize: 15)),
-          Text(value,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          Text(
+            key,
+            style: const TextStyle(fontSize: 15), // same as before
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -422,4 +512,4 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     );
   }
 }
-// yash changes
+
