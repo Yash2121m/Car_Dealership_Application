@@ -513,8 +513,14 @@ class _ChatScreenState extends State<ChatScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return (data['choices'][0]['message']['content'] as String).trim();
+      } else if (response.statusCode == 401) {
+        // friendly message and log details
+        // TODO: log resp.body to a secure crash / audit log (not to user)
+        return "AI service error: Unauthorized (401). Please check the API key / account.";
+      } else if (response.statusCode == 429) {
+        return "AI service rate limit exceeded. Please try again later.";
       } else {
-        return "AI Error: ${response.statusCode}\n${response.body}";
+        return "AI service returned an error (${response.statusCode}). Please try again later.";
       }
     } catch (e) {
       return "Something went wrong with the AI service. Error: $e";

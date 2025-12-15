@@ -5,7 +5,7 @@ class WishlistManager {
   final List<Car> _wishlist = [];
 
   factory WishlistManager() => _instance;
-
+// Some changes
   WishlistManager._internal();
 
   List<Car> get wishlist => _wishlist;

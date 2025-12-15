@@ -48,8 +48,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       extendBody: true, // allows nav bar to float over body
       body: _navigationList[_selectedIndex],
-      // Floating Action Button for Chat
-      // Floating Action Button for Chat
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 70, right: 10),
         child: Container(
@@ -141,8 +139,9 @@ class _MainScreenState extends State<MainScreen> {
 
       // Creative Bottom Nav
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(12),
-        height: 75,
+        // margin: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(2),
+        height: 86,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
@@ -196,10 +195,10 @@ class _MainScreenState extends State<MainScreen> {
                 onTap: _navigationBar,
                 selectedItemColor: Colors.purpleAccent,
                 unselectedItemColor: Colors.white70,
-
+                
                 showSelectedLabels: true,
                 showUnselectedLabels: false,
-                selectedFontSize: 12,
+                selectedFontSize: 10,
                 unselectedFontSize: 0,
 
                 items: List.generate(4, (index) {
@@ -216,13 +215,13 @@ class _MainScreenState extends State<MainScreen> {
 
                   return BottomNavigationBarItem(
                     label: isSelected ? labels[index] : "",
-                    icon: AnimatedScale(   // ✅ makes selected slightly bigger
-                      scale: isSelected ? 1.2 : 1.0,
+                    icon: AnimatedScale(
+                      scale: isSelected ? 1.1 : 1.0,
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeOut,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.all(8), // ✅ slightly reduced to prevent overflow
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           gradient: isSelected
                               ? LinearGradient(
@@ -237,14 +236,14 @@ class _MainScreenState extends State<MainScreen> {
                           color: isSelected
                               ? null
                               : Colors.purpleAccent.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: Colors.white.withOpacity(0.3),
                           ),
                         ),
                         child: Icon(
                           icons[index],
-                          size: isSelected ? 26 : 22, // ✅ selected bigger icon
+                          size: isSelected ? 26 : 22,
                         ),
                       ),
                     ),
