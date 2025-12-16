@@ -9,7 +9,6 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool darkTheme = false;
 
     final List<Map<String, dynamic>> categories = [
       {'title': 'Sedan', 'subtitle': 'Comfort & Style', 'image': 'images/sedan_logo.png', 'cars': sedanCars},

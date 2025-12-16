@@ -3,13 +3,10 @@ import 'dart:ui';
 import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:cardealer/controller/bottom_navigation_controller.dart';
 import 'package:cardealer/screens/Home_screen.dart';
-import 'package:cardealer/screens/MessageToAdmin.dart';
 import 'package:cardealer/screens/categories_screen.dart';
 import 'package:cardealer/screens/profile_screen.dart';
-import 'package:cardealer/screens/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 
 import 'ChatBot_Screen.dart';
@@ -42,7 +39,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context){
-    BottomNavigationController controller =
     Get.put(BottomNavigationController());
 
     return Scaffold(
@@ -243,7 +239,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         child: Icon(
                           icons[index],
-                          size: isSelected ? 26 : 22,
+                          size: isSelected ? 22 : 20,
                         ),
                       ),
                     ),
