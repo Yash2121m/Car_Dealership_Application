@@ -81,17 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.black, fontWeight: FontWeight.bold)),
             backgroundColor: Colors.transparent,
             elevation: 0,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.message, color: Colors.black),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const MessagingPage()));
-                },
-              ),
-            ],
           ),
         ),
       ),
@@ -137,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(builder: (_) => const LoginScreen()));
               },
             ),
-            SizedBox(height: 100,),
+            SizedBox(height: 120,),
           ],
         ),
       ),
@@ -148,11 +137,77 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hi, $userName 👋",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             _buildSearchBar(context),
+
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MessagingPage()),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ColorSys.purple1.withOpacity(0.15),
+                      ColorSys.purple2.withOpacity(0.15),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.support_agent, color: Colors.purple),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        "Need help choosing a car? Chat with our expert",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios, size: 14),
+                  ],
+                ),
+              ),
+            ),
             const Padding(
               padding: EdgeInsets.all(20.0),
               child: SliderHome(),
             ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _quickAction(context, Icons.car_rental, "Test Drive",
+                    const TestDriveHistoryPage()),
+                _quickAction(context, Icons.local_shipping, "Orders",
+                    const OrderedCarScreen()),
+                _quickAction(context, Icons.favorite, "Wishlist",
+                    const WishlistScreen()),
+              ],
+            ),
+
+
 
             // Popular Brands
             _sectionTitle("Popular Brands", darkTheme),
@@ -356,4 +411,66 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+Widget _quickAction(
+    BuildContext context,
+    IconData icon,
+    String title,
+    Widget page,
+    ) {
+  return InkWell(
+    borderRadius: BorderRadius.circular(18),
+    onTap: () =>
+        Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+    child: Container(
+      width: 90,
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white.withOpacity(0.7),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(
+          color: ColorSys.purple1.withOpacity(0.3),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  ColorSys.purple1.withOpacity(0.9),
+                  ColorSys.purple2.withOpacity(0.9),
+                ],
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 22,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 import 'dart:convert';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // Your models
 import '../Model/AllCars.dart';
@@ -488,12 +489,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // ====== LLM FALLBACK ======
   Future<String> _getLLMResponse(String prompt) async {
-    const apiKey = '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';
-    const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+    final apiKey = dotenv.env['CHAT_BOT_API_KEY'];
+    final endpoint = dotenv.env['CHAT_BOT_ENDPOINT'];
 
     try {
       final response = await http.post(
-        Uri.parse(endpoint),
+        Uri.parse(endpoint!),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $apiKey',
