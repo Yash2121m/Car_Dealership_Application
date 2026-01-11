@@ -7,6 +7,7 @@ import 'BrandCarScreen.dart';
 import 'Maintenance_Reminder_Screen.dart';
 import 'MessageToAdmin.dart';
 import 'Orders.dart';
+import 'dart:ui';
 import 'SearchScreen.dart';
 import 'SliderHome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,49 +88,104 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Creative Drawer
       drawer: Drawer(
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [ColorSys.purple1, ColorSys.purple2],
+                  colors: [
+                    Colors.white.withOpacity(0.55),
+                    Colors.white.withOpacity(0.05),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.2),
+                ),
               ),
-              accountName: Text(userName,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              accountEmail: Text(
-                FirebaseAuth.instance.currentUser?.email ?? "",
-                style: const TextStyle(color: Colors.white70),
-              ),
-              currentAccountPicture: const CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, size: 40, color: Colors.purple),
+              child: Column(
+                children: [
+                  UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          ColorSys.purple1.withOpacity(0.8),
+                          ColorSys.purple2.withOpacity(0.7),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    accountName: Text(
+                      userName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    accountEmail: Text(
+                      FirebaseAuth.instance.currentUser?.email ?? "",
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                    currentAccountPicture: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.3),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.4),
+                        ),
+                      ),
+                      child: const Icon(Icons.person,
+                          size: 40, color: Colors.white),
+                    ),
+                  ),
+
+                  _drawerTile(Icons.favorite, 'Wishlist', const WishlistScreen()),
+                  _drawerTile(Icons.local_shipping_outlined, 'Orders',
+                      const OrderedCarScreen()),
+                  _drawerTile(Icons.directions_car_filled, 'Test Drives',
+                      const TestDriveHistoryPage()),
+                  _drawerTile(Icons.car_repair_sharp, 'Maintenance',
+                      MaintenanceReminderScreen()),
+                  _drawerTile(Icons.accessibility_rounded, 'ChatBot',
+                      ChatScreen()),
+
+                  const Spacer(),
+
+                  ListTile(
+                    leading: const Icon(Icons.logout, color: Colors.redAccent),
+                    title: const Text(
+                      'Logout',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 120),
+                ],
               ),
             ),
-            _drawerTile(Icons.favorite, 'Wishlist', const WishlistScreen()),
-            _drawerTile(
-                Icons.local_shipping_outlined, 'Orders', const OrderedCarScreen()),
-            _drawerTile(Icons.directions_car_filled, 'Test Drives',
-                const TestDriveHistoryPage()),
-            _drawerTile(Icons.car_repair_sharp, 'Maintenance',MaintenanceReminderScreen()),
-            _drawerTile(Icons.accessibility_rounded, 'ChatBot', ChatScreen()),
-            const Spacer(),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              onTap: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()));
-              },
-            ),
-            SizedBox(height: 120,),
-          ],
+          ),
         ),
       ),
+
 
       // Body
       body: SingleChildScrollView(

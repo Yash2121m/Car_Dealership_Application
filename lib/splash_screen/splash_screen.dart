@@ -190,7 +190,7 @@ class _SplashScreenState extends State<SplashScreen> {
       width: isActive ? 30 : 6,
       margin: EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.purpleAccent,
           borderRadius: BorderRadius.circular(5)
       ),
     );

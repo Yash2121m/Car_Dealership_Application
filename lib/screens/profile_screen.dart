@@ -149,45 +149,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget buildDetailTile(String label, String value, IconData icon) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
-              blurRadius: 8,
-              offset: const Offset(0, 4))
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: ColorSys.purple1.withOpacity(0.15),
-            child: Icon(icon, color: ColorSys.purple1),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.75),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.4),
+              ),
+            ),
+            child: Row(
               children: [
-                Text(label,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500)),
-                const SizedBox(height: 5),
-                Text(value,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold)),
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor:
+                  ColorSys.purple1.withOpacity(0.15),
+                  child: Icon(icon,
+                      color: ColorSys.purple1, size: 22),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(label.toUpperCase(),
+                          style: const TextStyle(
+                              fontSize: 11,
+                              letterSpacing: 1,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 6),
+                      Text(value,
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -196,120 +203,160 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [ColorSys.purple1, ColorSys.purple2],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius:
-            const BorderRadius.vertical(bottom: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              )
-            ],
-          ),
-          child: AppBar(
-            title: const Text("Profile",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-
-              actions: [
-                IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.black87),
-                    onPressed: showEditProfileDialog),
-              ],
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            ColorSys.purple1.withOpacity(0.55),
+            Colors.white,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
-      body: user == null
-          ? const Center(
-          child: Text("User not signed in.",
-              style: TextStyle(color: Colors.black54)))
-          : userModel == null
-          ? Center(
-        child: Lottie.asset(
-          "images/Travel_app.json", // ✅ Your loader
-          width: 250,
-          height: 250,
+      child: Scaffold(
+        // backgroundColor: Colors.grey.shade100,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [ColorSys.purple1, ColorSys.purple2],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius:
+              const BorderRadius.vertical(bottom: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ],
+            ),
+            child: AppBar(
+              title: const Text("Profile",
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+
+                actions: [
+                  IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.black87),
+                      onPressed: showEditProfileDialog),
+                ],
+            ),
+          ),
         ),
-      )
-          : SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Profile Avatar with shadow
-            Center(
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorSys.purple1.withOpacity(0.4),
-                      blurRadius: 20,
-                      spreadRadius: 3,
-                    )
-                  ],
+        body: user == null
+            ? const Center(
+            child: Text("User not signed in.",
+                style: TextStyle(color: Colors.black54)))
+            : userModel == null
+            ? Center(
+          child: Lottie.asset(
+            "images/Travel_app.json", // ✅ Your loader
+            width: 250,
+            height: 250,
+          ),
+        )
+            : SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              // Profile Avatar with shadow
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: ColorSys.purple1.withOpacity(0.4),
+                        blurRadius: 20,
+                        spreadRadius: 3,
+                      )
+                    ],
+                  ),
+                  child: Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 140,
+                          height: 140,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                ColorSys.purple1.withOpacity(0.6),
+                                ColorSys.purple2.withOpacity(0.6),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: ColorSys.purple1.withOpacity(0.5),
+                                blurRadius: 25,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 55,
+                          backgroundColor: Colors.white.withOpacity(0.9),
+                          child: const Icon(Icons.person,
+                              size: 60, color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                child: CircleAvatar(
-                  radius: 55,
+              ),
+              const SizedBox(height: 20),
+              // Profile Details
+              buildDetailTile(
+                  "Name", userModel?.name ?? "N/A", Icons.person),
+              buildDetailTile(
+                  "Email", userModel?.email ?? "N/A", Icons.email),
+              buildDetailTile(
+                  "Phone", userModel?.phone ?? "N/A", Icons.phone),
+              buildDetailTile("Address",
+                  userModel?.address ?? "N/A", Icons.location_on),
+              const SizedBox(height: 30),
+              // Sign out button
+              ElevatedButton.icon(
+                onPressed: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                  );
+                },
+                icon: const Icon(Icons.logout, color: Colors.black),
+                label: const Text(
+                  "Sign Out",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                style: ElevatedButton.styleFrom(
                   backgroundColor: ColorSys.purple1,
-                  child: const Icon(Icons.person,
-                      size: 60, color: Colors.white),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 60, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  elevation: 4,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            // Profile Details
-            buildDetailTile(
-                "Name", userModel?.name ?? "N/A", Icons.person),
-            buildDetailTile(
-                "Email", userModel?.email ?? "N/A", Icons.email),
-            buildDetailTile(
-                "Phone", userModel?.phone ?? "N/A", Icons.phone),
-            buildDetailTile("Address",
-                userModel?.address ?? "N/A", Icons.location_on),
-            const SizedBox(height: 30),
-            // Sign out button
-            ElevatedButton.icon(
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoginScreen()),
-                );
-              },
-              icon: const Icon(Icons.logout, color: Colors.black),
-              label: const Text(
-                "Sign Out",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorSys.purple1,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 60, vertical: 15),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                elevation: 4,
-              ),
-            ),
-            const SizedBox(height: 100),
-          ],
+              const SizedBox(height: 150),
+            ],
+          ),
         ),
       ),
     );

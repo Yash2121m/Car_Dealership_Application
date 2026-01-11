@@ -41,7 +41,7 @@ class _BottomNavAdmin extends State<BottomNavAdmin> {
     Get.put(BottomNavigationController());
 
     return Scaffold(
-      extendBody: true, // allows nav bar to float over body
+      extendBody: true,
       body: _navigationList[_selectedIndex],
       // Creative Bottom Nav
       bottomNavigationBar: Container(
@@ -67,56 +67,77 @@ class _BottomNavAdmin extends State<BottomNavAdmin> {
                 BottomNavigationBarItem(
                   icon: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(
+                      _selectedIndex == 0 ? 10 : 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _selectedIndex == 0
                           ? Colors.purpleAccent.withOpacity(0.2)
                           : Colors.grey[400],
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.home),
+                    child: Transform.scale(
+                      scale: _selectedIndex == 0 ? 1.55 : 1.0,
+                      child: const Icon(Icons.home),
+                    ),
+
                   ),
                   label: "Home",
                 ),
                 BottomNavigationBarItem(
                   icon: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(
+                      _selectedIndex == 1 ? 10 : 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _selectedIndex == 1
                           ? Colors.purpleAccent.withOpacity(0.2)
                           : Colors.grey[400],
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.local_shipping_outlined),
+                    child: Transform.scale(
+                      scale: _selectedIndex == 1 ? 1.55 : 1.0,
+                      child: const Icon(Icons.local_shipping_outlined),
+                    ),
                   ),
                   label: "Orders",
                 ),
                 BottomNavigationBarItem(
                   icon: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(
+                      _selectedIndex == 2 ? 10 : 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _selectedIndex == 2
                           ? Colors.purpleAccent.withOpacity(0.2)
                           : Colors.grey[400],
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.message_outlined),
+                    child: Transform.scale(
+                      scale: _selectedIndex == 2 ? 1.55 : 1.0,
+                      child: const Icon(Icons.message_outlined),
+                    ),
                   ),
                   label: "Messages",
                 ),
                 BottomNavigationBarItem(
                   icon: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(6),
+                    padding: EdgeInsets.all(
+                      _selectedIndex == 3 ? 10 : 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _selectedIndex == 3
                           ? Colors.purpleAccent.withOpacity(0.2)
                           : Colors.grey[400],
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.person_2_rounded),
+                    child: Transform.scale(
+                      scale: _selectedIndex == 3 ? 1.55 : 1.0,
+                      child: const Icon(Icons.person_2_rounded),
+                    ),
                   ),
                   label: "Profile",
                 ),
