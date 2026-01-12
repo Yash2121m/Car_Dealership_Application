@@ -500,7 +500,9 @@ class _ChatScreenState extends State<ChatScreen> {
           'Authorization': 'Bearer $apiKey',
         },
         body: jsonEncode({
-          "model": "deepseek/deepseek-chat",
+          "model": "google/gemini-2.5-flash-lite",
+          // "model": "allenai/molmo-2-8b:free",
+          // "model": "deepseek/deepseek-chat",
           "messages": [
             {
               "role": "system",
