@@ -7,10 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cardealer/screens/signup_screen.dart';
 import 'package:cardealer/screens/forgot_password_screen.dart';
-import '../Admin_Pages/admin_home_screen.dart';
+
 import '../global/global.dart';
 import 'main_page.dart';
-
+bool isGuest = false;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -26,45 +26,65 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool passwordVisible = false;
 
-  Key? get key => null;
-
+  /// ---------------- USER LOGIN ----------------
   void submit() async {
     if (form.currentState!.validate()) {
-      await firebaseAuth
-          .signInWithEmailAndPassword(
+      try {
+        final auth = await firebaseAuth.signInWithEmailAndPassword(
           email: emailTextEditingController.text.trim(),
-          password: passwordTextEditingController.text.trim())
-          .then((auth) async {
+          password: passwordTextEditingController.text.trim(),
+        );
+
         currentUser = auth.user;
 
         if (currentUser != null && currentUser!.emailVerified) {
-          await Fluttertoast.showToast(msg: "Successfully Logged In");
+          isGuest = false;
 
-          // Check for admin email
+          Fluttertoast.showToast(msg: "Successfully Logged In");
+
+          // ADMIN LOGIN
           if (currentUser!.email == "yashspatil2121m@gmail.com") {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) =>  BottomNavAdmin(key)),
+              MaterialPageRoute(
+                builder: (context) => BottomNavAdmin(null),
+              ),
             );
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => MainScreen(key)),
+              MaterialPageRoute(
+                builder: (context) => MainScreen(null),
+              ),
             );
           }
         } else {
-          await Fluttertoast.showToast(
+          Fluttertoast.showToast(
               msg: "Email not verified. Please check your inbox.");
           await firebaseAuth.signOut();
         }
-      }).catchError((errorMessage) {
-        Fluttertoast.showToast(msg: "Error Occurred:\n $errorMessage");
-      });
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Login failed: $e");
+      }
     } else {
       Fluttertoast.showToast(msg: "Not all fields are valid");
     }
   }
 
+  /// ---------------- GUEST LOGIN ----------------
+  void guestLogin() {
+    isGuest = true;
+    currentUser = null;
+
+    Fluttertoast.showToast(msg: "Logged in as Guest");
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainScreen(null),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,133 +98,81 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: darkTheme ? Colors.black : Colors.white,
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: double.infinity,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            children: [
               Expanded(
                 child: Form(
                   key: form,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
+                    children: [
                       Column(
-                        children: <Widget>[
+                        children: [
                           FadeInUp(
-                            duration: Duration(milliseconds: 1000),
+                            duration: const Duration(milliseconds: 1000),
                             child: Text(
                               "Login",
                               style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: darkTheme
-                                      ? Colors.purpleAccent.shade100
-                                      : ColorSys.purple2),
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: ColorSys.purple2,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 15),
                           FadeInUp(
-                            duration: Duration(milliseconds: 1200),
-                            child: Text(
+                            duration: const Duration(milliseconds: 1200),
+                            child: const Text(
                               "Login to your account",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: darkTheme
-                                      ? Colors.grey[400]
-                                      : Colors.grey[700]),
+                              style: TextStyle(color: Colors.grey),
                             ),
                           ),
                         ],
                       ),
+
+                      /// ---------------- EMAIL & PASSWORD ----------------
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Column(
-                          children: <Widget>[
+                          children: [
                             FadeInUp(
-                              duration: Duration(milliseconds: 1200),
+                              duration: const Duration(milliseconds: 1200),
                               child: TextFormField(
                                 controller: emailTextEditingController,
                                 keyboardType: TextInputType.emailAddress,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(100),
+                                  LengthLimitingTextInputFormatter(100)
                                 ],
-                                decoration: InputDecoration(
-                                  hintText: "Email",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10),
-                                  filled: true,
-                                  fillColor: darkTheme
-                                      ? Colors.grey.shade900
-                                      : Colors.grey.shade100,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey.shade400)),
-                                ),
-                                autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                decoration: inputDecoration("Email"),
                                 validator: (text) {
                                   if (text == null || text.isEmpty) {
                                     return "Email can't be empty";
                                   }
                                   if (!EmailValidator.validate(text)) {
-                                    return "Please enter a valid email";
+                                    return "Enter valid email";
                                   }
                                   return null;
                                 },
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
                             FadeInUp(
-                              duration: Duration(milliseconds: 1300),
+                              duration: const Duration(milliseconds: 1300),
                               child: TextFormField(
                                 controller: passwordTextEditingController,
                                 obscureText: !passwordVisible,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50),
+                                  LengthLimitingTextInputFormatter(50)
                                 ],
-                                decoration: InputDecoration(
-                                  hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 10),
-                                  filled: true,
-                                  fillColor: darkTheme
-                                      ? Colors.grey.shade900
-                                      : Colors.grey.shade100,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                    borderSide: BorderSide(
-                                        color: darkTheme
-                                            ? Colors.purpleAccent
-                                            : ColorSys.purple2),
-                                  ),
+                                decoration: inputDecoration("Password").copyWith(
                                   suffixIcon: IconButton(
-                                    icon: Icon(
-                                      passwordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: darkTheme
-                                          ? Colors.purpleAccent.shade100
-                                          : Colors.grey,
-                                    ),
+                                    icon: Icon(passwordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
                                     onPressed: () {
                                       setState(() {
                                         passwordVisible = !passwordVisible;
@@ -212,17 +180,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                                   ),
                                 ),
-                                autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
                                 validator: (text) {
                                   if (text == null || text.isEmpty) {
                                     return "Password can't be empty";
                                   }
-                                  if (text.length < 2) {
-                                    return "Enter a valid password";
-                                  }
-                                  if (text.length > 49) {
-                                    return "Password too long";
+                                  if (text.length < 6) {
+                                    return "Minimum 6 characters";
                                   }
                                   return null;
                                 },
@@ -231,98 +194,135 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
+
+                      /// ---------------- LOGIN BUTTON ----------------
                       FadeInUp(
-                        duration: Duration(milliseconds: 1400),
+                        duration: const Duration(milliseconds: 1400),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 40),
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
                           child: MaterialButton(
-                            minWidth: double.infinity,
                             height: 60,
-                            onPressed: submit,
-                            color: darkTheme
-                                ? Colors.purpleAccent.shade100
-                                : ColorSys.purple2,
-                            elevation: 0,
+                            minWidth: double.infinity,
+                            color: ColorSys.purple2,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Text(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            onPressed: submit,
+                            child: const Text(
                               "Log-in",
                               style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// ---------------- GUEST BUTTON ----------------
+                      FadeInUp(
+                        duration: const Duration(milliseconds: 1500),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: OutlinedButton(
+                            onPressed: guestLogin,
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(double.infinity, 55),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              side:
+                              BorderSide(color: ColorSys.purple2, width: 2),
+                            ),
+                            child: Text(
+                              "Continue as Guest",
+                              style: TextStyle(
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 18,
-                                color: darkTheme ? Colors.black : Colors.white,
+                                color: ColorSys.purple2,
                               ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
+
+                      /// ---------------- FORGOT & SIGNUP ----------------
                       FadeInUp(
-                        duration: Duration(milliseconds: 1500),
+                        duration: const Duration(milliseconds: 1600),
                         child: TextButton(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (c) => ForgotPasswordScreen()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => ForgotPasswordScreen()),
+                            );
                           },
                           child: Text("Forgot Password?",
-                              style: TextStyle(
-                                  color: darkTheme
-                                      ? Colors.purpleAccent.shade100
-                                      : ColorSys.purple2)),
+                              style: TextStyle(color: ColorSys.purple2)),
                         ),
                       ),
+
                       FadeInUp(
-                          duration: Duration(milliseconds: 1500),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Don't have an account?",
-                                  style: TextStyle(
-                                      color: darkTheme
-                                          ? Colors.grey
-                                          : Colors.black)),
-                              InkWell(
-                                child: Text(
-                                  " Sign up",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: darkTheme
-                                          ? Colors.purpleAccent.shade100
-                                          : ColorSys.purple2),
+                        duration: const Duration(milliseconds: 1700),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Don't have an account? "),
+                            InkWell(
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => SignupScreen()),
+                                );
+                              },
+                              child: Text(
+                                "Sign up",
+                                style: TextStyle(
+                                  color: ColorSys.purple2,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                onTap: () {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (c) => SignupScreen()));
-                                },
                               ),
-                            ],
-                          ))
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
+
+              /// ---------------- IMAGE ----------------
               FadeInUp(
-                duration: Duration(milliseconds: 1200),
+                duration: const Duration(milliseconds: 1200),
                 child: Container(
                   height: MediaQuery.of(context).size.height / 3,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(darkTheme
-                          ? 'images/Dark.jpg'
-                          : 'images/light.jpg'),
+                      image: AssetImage('images/light.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  InputDecoration inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey.shade400),
+        borderRadius: BorderRadius.circular(5),
       ),
     );
   }

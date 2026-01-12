@@ -199,6 +199,22 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
         child: BarChart(
           BarChartData(
             maxY: (totalRevenue + accessoriesRevenue) * 1.2,
+            barTouchData: BarTouchData(
+              enabled: true,
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipColor: (group) => ColorSys.purple1,
+                tooltipRoundedRadius: 12,
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  return BarTooltipItem(
+                    "₹${rod.toY.toStringAsFixed(0)}",
+                    const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+            ),
             barGroups: [
               BarChartGroupData(x: 0, barRods: [
                 BarChartRodData(
@@ -343,7 +359,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
             icon: const Icon(Icons.analytics),
             label: const Text("View Detailed Analytics"),
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSys.purple2,
+              backgroundColor: ColorSys.purple1,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),

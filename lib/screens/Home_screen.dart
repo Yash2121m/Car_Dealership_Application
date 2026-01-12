@@ -25,13 +25,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName = "Loading...";
+  String userName = "Guest";
 
 
   @override
   void initState() {
     super.initState();
-    fetchUserName();
+
+    if (!isGuest) {
+      fetchUserName();
+    }
   }
 
   void fetchUserName() async {
@@ -125,14 +128,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     accountName: Text(
-                      userName,
+                      isGuest ? "Guest User" : userName,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     accountEmail: Text(
-                      FirebaseAuth.instance.currentUser?.email ?? "",
+                      isGuest
+                          ? "guest@cardealer"
+                          : FirebaseAuth.instance.currentUser?.email ?? "",
                       style: const TextStyle(color: Colors.white70),
                     ),
                     currentAccountPicture: Container(
@@ -148,15 +153,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  _drawerTile(Icons.favorite, 'Wishlist', const WishlistScreen()),
+                  _drawerTile(Icons.favorite, 'Wishlist', const WishlistScreen(),
+                      requiresLogin: false),
+
                   _drawerTile(Icons.local_shipping_outlined, 'Orders',
-                      const OrderedCarScreen()),
+                      const OrderedCarScreen(),
+                      requiresLogin: false),
+
                   _drawerTile(Icons.directions_car_filled, 'Test Drives',
-                      const TestDriveHistoryPage()),
+                      const TestDriveHistoryPage(),
+                      requiresLogin: false),
+
                   _drawerTile(Icons.car_repair_sharp, 'Maintenance',
-                      MaintenanceReminderScreen()),
-                  _drawerTile(Icons.accessibility_rounded, 'ChatBot',
-                      ChatScreen()),
+                      MaintenanceReminderScreen(),
+                      requiresLogin: false),
+
+                  _drawerTile(Icons.accessibility_rounded, 'ChatBot', ChatScreen()),
+
 
                   const Spacer(),
 
@@ -199,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Hi, $userName 👋",
+                    "Hi, ${isGuest ? "Guest" : userName} 👋",
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -311,15 +324,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _drawerTile(IconData icon, String title, Widget page) {
+  Widget _drawerTile(IconData icon, String title, Widget page,
+      {bool requiresLogin = false}) {
     return ListTile(
       leading: Icon(icon, color: ColorSys.purple2),
-      title: Text(title,
-          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
-      onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+      ),
+      onTap: () {
+        if (requiresLogin && isGuest) {
+          // 🔒 Redirect guest to login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+          );
+          return;
+        }
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => page),
+        );
+      },
     );
   }
+
 
   // Glass-morphism Search Bar
   Widget _buildSearchBar(BuildContext context) {

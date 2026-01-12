@@ -144,6 +144,27 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
               show: true,
               horizontalInterval: maxValue / 4,
             ),
+
+            lineTouchData: LineTouchData(
+              enabled: true,
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (touchedSpot) => ColorSys.purple1,
+                tooltipRoundedRadius: 10,
+                getTooltipItems: (spots) {
+                  return spots.map((spot) {
+                    return LineTooltipItem(
+                      "₹${spot.y.toStringAsFixed(0)}",
+                      const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    );
+                  }).toList();
+                },
+              ),
+            ),
+
             titlesData: FlTitlesData(
               topTitles:
               AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -281,7 +302,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
       icon: const Icon(Icons.picture_as_pdf),
       label: const Text("Export Analytics PDF"),
       style: ElevatedButton.styleFrom(
-        backgroundColor: ColorSys.purple2,
+        backgroundColor: ColorSys.purple1,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
