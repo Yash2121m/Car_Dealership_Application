@@ -251,11 +251,24 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen>
       )
           : isLoading
           ? Center(
-        child: Lottie.asset(
-          "images/Travel_app.json",
-          width: 250,
-          height: 250,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              "images/Travel_app.json",
+              width: 220,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Checking your car health...",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
+
       )
           : carReminders.isEmpty
           ? Center(
@@ -283,13 +296,28 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen>
         itemCount: carReminders.length,
         itemBuilder: (context, index) {
           final reminder = carReminders[index];
-          return Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15)),
+          return Container(
             margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.95),
+                  Colors.grey.shade100.withOpacity(0.9)
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
