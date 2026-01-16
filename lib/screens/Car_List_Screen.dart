@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../Assistance/ColorHelper.dart';
 import '../Model/Car_Mode.dart';
+import '../Model/Price_Formatter.dart';
 import 'car_detail_screen.dart';
 
 class CarListScreen extends StatelessWidget {
@@ -293,7 +294,7 @@ class CarListScreen extends StatelessWidget {
                                                     ),
                                                   ),
                                                   child: Text(
-                                                    '₹ ${car.totalPrice}',
+                                                    '₹ ${formatIndianPrice(car.totalPrice)}',
                                                     style: const TextStyle(
                                                       color: Colors.black,
                                                       fontWeight: FontWeight.bold,
