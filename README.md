@@ -210,7 +210,7 @@ The AI assistant is designed to act like a **virtual sales representative**, off
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/ai-car-dealer-app.git
+git clone https://github.com/Yash2121m/Car_Dealership_Application.git
 
 # Navigate to the project
 cd ai-car-dealer-app
