@@ -8,7 +8,8 @@ import '../Assistance/ColorHelper.dart';
 import '../Model/Car_Mode.dart';
 import '../Model/user_model.dart';
 import 'InsuranceWarrantyPage.dart';
-import 'AccessoriesScreen.dart'; // ✅ Import Accessories Screen
+import 'AccessoriesScreen.dart';
+import 'login_screen.dart'; // ✅ Import Accessories Screen
 
 class BookingPage extends StatefulWidget {
   final Car car;
@@ -244,7 +245,50 @@ class _BookingPageState extends State<BookingPage> {
           ),
         ),
       ),
-      body: Stack(
+      body: isGuest
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock_outline,
+                size: 80, color: Colors.grey),
+            const SizedBox(height: 15),
+            const Text(
+              "Login Required",
+              style:
+              TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "Please login to view your orders",
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSys.purple2,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LoginScreen(),
+                  ),
+                );
+              },
+              child: const Text(
+                "Go to Login",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ):
+      Stack(
         children: [
           SingleChildScrollView(
             child: Padding(

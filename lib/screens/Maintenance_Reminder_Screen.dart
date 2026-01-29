@@ -3,27 +3,37 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:lottie/lottie.dart'; // ✅ Added
-import 'package:cardealer/global/global.dart';
-import 'package:cardealer/Assistance/ColorHelper.dart';
+import 'package:lottie/lottie.dart';
 
-import '../main.dart'; // For flutterLocalNotificationsPlugin
+import '../global/global.dart';
+import '../Assistance/ColorHelper.dart';
+import '../screens/login_screen.dart';
+import '../main.dart'; // flutterLocalNotificationsPlugin
 
 class MaintenanceReminderScreen extends StatefulWidget {
   const MaintenanceReminderScreen({Key? key}) : super(key: key);
 
   @override
-  State<MaintenanceReminderScreen> createState() => _MaintenanceReminderScreenState();
+  State<MaintenanceReminderScreen> createState() =>
+      _MaintenanceReminderScreenState();
 }
 
-class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> with WidgetsBindingObserver {
+class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen>
+    with WidgetsBindingObserver {
   List<Map<String, dynamic>> carReminders = [];
-  bool isLoading = true; // ✅ Added state
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // 🚫 Block guest users
+    if (isGuest || FirebaseAuth.instance.currentUser == null) {
+      isLoading = false;
+      return;
+    }
+
     fetchBookings();
   }
 
@@ -35,81 +45,106 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> w
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed &&
+        !isGuest &&
+        FirebaseAuth.instance.currentUser != null) {
       fetchBookings();
     }
   }
 
   Future<void> fetchBookings() async {
-    setState(() => isLoading = true); // ✅ Show loader
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) return;
+    setState(() => isLoading = true);
 
-    final ref = FirebaseDatabase.instance.ref().child("bookings").child(uid);
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      setState(() => isLoading = false);
+      return;
+    }
+
+    final ref = FirebaseDatabase.instance.ref().child("bookings/$uid");
     final snapshot = await ref.get();
 
+    List<Map<String, dynamic>> reminders = [];
+
     if (snapshot.exists) {
-      Map data = snapshot.value as Map;
-      List<Map<String, dynamic>> reminders = [];
+      final Map data = snapshot.value as Map;
 
       for (var entry in data.entries) {
         final booking = entry.value;
-        if (booking['paymentDone'] == true && booking['timestamp'] != null) {
+
+        if (booking['paymentDone'] == true &&
+            booking['timestamp'] != null) {
           final date = DateTime.tryParse(booking['timestamp']);
-          if (date != null) {
-            final firstService = date.add(const Duration(days: 30)).difference(DateTime.now());
-            final insurance = date.add(const Duration(days: 365)).difference(DateTime.now());
-            final pollution = date.add(const Duration(days: 90)).difference(DateTime.now());
-            final tyreRotation = date.add(const Duration(days: 180)).difference(DateTime.now());
-            final brakeCheck = date.add(const Duration(days: 200)).difference(DateTime.now());
-            final batteryCheck = date.add(const Duration(days: 900)).difference(DateTime.now());
+          if (date == null) continue;
 
-            if (firstService.inDays <= 0) {
-              await showLocalNotification("First Service Due", "${booking['carName']} needs its first service!");
-            }
-            if (insurance.inDays <= 0) {
-              await showLocalNotification("Insurance Renewal Due", "${booking['carName']} insurance needs renewal!");
-            }
-            if (pollution.inDays <= 0) {
-              await showLocalNotification("Pollution Check Due", "${booking['carName']} needs a pollution check!");
-            }
-            if (tyreRotation.inDays <= 0) {
-              await showLocalNotification("Tyre Service Due", "Rotate or check tyres of ${booking['carName']}!");
-            }
-            if (brakeCheck.inDays <= 0) {
-              await showLocalNotification("Brake Check Due", "Inspect brakes of ${booking['carName']} for safety!");
-            }
-            if (batteryCheck.inDays <= 0) {
-              await showLocalNotification("Battery Check Due", "Battery health check required for ${booking['carName']}!");
-            }
+          final firstService =
+          date.add(const Duration(days: 30)).difference(DateTime.now());
+          final insurance =
+          date.add(const Duration(days: 365)).difference(DateTime.now());
+          final pollution =
+          date.add(const Duration(days: 90)).difference(DateTime.now());
+          final tyreRotation =
+          date.add(const Duration(days: 180)).difference(DateTime.now());
+          final brakeCheck =
+          date.add(const Duration(days: 200)).difference(DateTime.now());
+          final batteryCheck =
+          date.add(const Duration(days: 900)).difference(DateTime.now());
 
-            reminders.add({
-              'carName': booking['carName'] ?? 'N/A',
-              'bookingDate': date,
-              'tasks': [
-                {"title": "First Service", "time": firstService, "icon": Icons.build_circle},
-                {"title": "Insurance Renewal", "time": insurance, "icon": Icons.policy},
-                {"title": "Pollution Check", "time": pollution, "icon": Icons.cloud},
-                {"title": "Tyre Rotation", "time": tyreRotation, "icon": Icons.circle},
-                {"title": "Brake Service", "time": brakeCheck, "icon": Icons.car_crash},
-                {"title": "Battery Check", "time": batteryCheck, "icon": Icons.battery_full},
-              ]
-            });
+          if (firstService.inDays <= 0) {
+            await showLocalNotification(
+              "First Service Due",
+              "${booking['carName']} needs its first service!",
+            );
           }
+
+          reminders.add({
+            'carName': booking['carName'] ?? 'N/A',
+            'bookingDate': date,
+            'tasks': [
+              {
+                "title": "First Service",
+                "time": firstService,
+                "icon": Icons.build_circle
+              },
+              {
+                "title": "Insurance Renewal",
+                "time": insurance,
+                "icon": Icons.policy
+              },
+              {
+                "title": "Pollution Check",
+                "time": pollution,
+                "icon": Icons.cloud
+              },
+              {
+                "title": "Tyre Rotation",
+                "time": tyreRotation,
+                "icon": Icons.circle
+              },
+              {
+                "title": "Brake Service",
+                "time": brakeCheck,
+                "icon": Icons.car_crash
+              },
+              {
+                "title": "Battery Check",
+                "time": batteryCheck,
+                "icon": Icons.battery_full
+              },
+            ]
+          });
         }
       }
-
-      setState(() {
-        carReminders = reminders;
-        isLoading = false; // ✅ Hide loader
-      });
-    } else {
-      setState(() => isLoading = false);
     }
+
+    setState(() {
+      carReminders = reminders;
+      isLoading = false;
+    });
   }
 
   Future<void> showLocalNotification(String title, String body) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    const androidDetails = AndroidNotificationDetails(
       'maintenance_channel',
       'Maintenance Notifications',
       channelDescription: 'Car maintenance reminders',
@@ -117,19 +152,22 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> w
       priority: Priority.high,
     );
 
-    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+    const notificationDetails =
+    NotificationDetails(android: androidDetails);
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title,
       body,
-      platformDetails,
+      notificationDetails,
     );
   }
 
   String formatDuration(Duration duration) {
     if (duration.inDays <= 0) return "⚠️ Due now!";
-    if (duration.inDays <= 30) return "⏳ ${duration.inDays} days (Due soon)";
+    if (duration.inDays <= 30) {
+      return "⏳ ${duration.inDays} days (Due soon)";
+    }
     return "${duration.inDays} days remaining";
   }
 
@@ -151,7 +189,8 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> w
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+            borderRadius:
+            const BorderRadius.vertical(bottom: Radius.circular(20)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.15),
@@ -161,29 +200,83 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> w
             ],
           ),
           child: AppBar(
-            title: const Text("Car Maintenance Tracker",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            title: const Text(
+              "Car Maintenance Tracker",
+              style:
+              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
         ),
       ),
-      body: isLoading
+
+      /// ---------------- GUEST GUARD ----------------
+      body: isGuest || FirebaseAuth.instance.currentUser == null
           ? Center(
-        child: Lottie.asset(
-          "images/Travel_app.json",
-          width: 250,
-          height: 250,
-          fit: BoxFit.contain,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock_outline,
+                size: 80, color: Colors.grey),
+            const SizedBox(height: 15),
+            const Text(
+              "Login Required",
+              style:
+              TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "Please login to view maintenance reminders",
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: ColorSys.purple1),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const LoginScreen()),
+                );
+              },
+              child: const Text(
+                "Go to Login",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
         ),
+      )
+          : isLoading
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(
+              "images/Travel_app.json",
+              width: 220,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Checking your car health...",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+
       )
           : carReminders.isEmpty
           ? Center(
-            child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Lottie.asset(
-              "images/empty_box.json", // optional empty-state animation
+              "images/empty_box.json",
               width: 200,
               height: 200,
             ),
@@ -191,50 +284,75 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen> w
             const Text(
               "No Reminders found",
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: 16,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500),
             ),
-                    ],
-                  ),
-          )
+          ],
+        ),
+      )
           : ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: carReminders.length,
         itemBuilder: (context, index) {
           final reminder = carReminders[index];
-          return Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          return Container(
             margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  Colors.white.withOpacity(0.95),
+                  Colors.grey.shade100.withOpacity(0.9)
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(reminder['carName'],
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Text("Booking Date: ${DateFormat.yMMMd().format(reminder['bookingDate'])}",
-                      style: const TextStyle(fontSize: 14, color: Colors.grey)),
-                  const Divider(height: 20, thickness: 1),
-                  if (reminder['tasks'] != null) ...reminder['tasks'].map<Widget>((task) {
+                  Text(
+                    reminder['carName'],
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Booking Date: ${DateFormat.yMMMd().format(reminder['bookingDate'])}",
+                    style: const TextStyle(
+                        fontSize: 14, color: Colors.grey),
+                  ),
+                  const Divider(height: 20),
+                  ...reminder['tasks'].map<Widget>((task) {
                     final time = task['time'] as Duration;
                     return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 6),
                       decoration: BoxDecoration(
                         color: getStatusColor(time),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius:
+                        BorderRadius.circular(10),
                       ),
                       child: ListTile(
-                        leading: Icon(task['icon'], color: Colors.black87),
-                        title: Text(task['title'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text(formatDuration(time)),
+                        leading: Icon(task['icon']),
+                        title: Text(task['title'],
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold)),
+                        subtitle:
+                        Text(formatDuration(time)),
                       ),
                     );
-                  }).toList()
-                  else
-                    const Text("No tasks available", style: TextStyle(color: Colors.red)),
+                  }).toList(),
                 ],
               ),
             ),

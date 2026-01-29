@@ -8,6 +8,7 @@ import 'package:cardealer/screens/main_page.dart';
 import 'package:cardealer/screens/signup_screen.dart';
 import 'package:cardealer/splash_screen/splash_screen.dart';
 import 'package:cardealer/themeProvider/themeProvider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -38,6 +39,7 @@ void main() async {
 
   // Initialize local notifications
   await initializeLocalNotifications();
+  await dotenv.load(fileName: ".env");
 
   runApp(MyApp());
 }

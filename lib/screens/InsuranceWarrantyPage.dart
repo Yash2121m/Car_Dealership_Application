@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../Assistance/ColorHelper.dart';
+
 class InsuranceWarrantyScreen extends StatefulWidget {
   final Map<String, String>? selectedInsurance;
   final Map<String, String>? selectedWarranty;
@@ -162,11 +164,33 @@ class _InsuranceWarrantyScreenState extends State<InsuranceWarrantyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Insurance & Warranty Plans"),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [ColorSys.purple1, ColorSys.purple2],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius:
+            const BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: AppBar(
+            title: const Text("Insurance & Warranty Plans",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

@@ -121,6 +121,77 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     });
   }
 
+  Widget _buildRejectionReasonCard(String reason) {
+    return Container(
+      margin: const EdgeInsets.only(top: 14, bottom: 18),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: [
+            Colors.red.shade50,
+            Colors.white,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(
+          color: Colors.red.withOpacity(0.4),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.15),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.red.withOpacity(0.15),
+            ),
+            child: const Icon(
+              Icons.error_outline_rounded,
+              color: Colors.red,
+              size: 26,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Order Rejected",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  reason,
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     bool darkTheme = false;
@@ -142,6 +213,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     final String? salarySlipBase64 = bookingData!['salarySlipBase64'];
     final String orderStatus = bookingData!['status'] ?? 'Pending';
     final bool isPaymentDone = bookingData!['paymentDone'] == true;
+    final String? rejectionReason = bookingData!['rejectionReason'];
+
 
     return Scaffold(
       backgroundColor: ColorSys.carback,
@@ -203,6 +276,12 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _statusTile(orderStatus),
+                      const SizedBox(height: 10),
+                      if (orderStatus.toLowerCase() == 'rejected' &&
+                          rejectionReason != null &&
+                          rejectionReason.isNotEmpty)
+                        _buildRejectionReasonCard(rejectionReason),
+
                       const SizedBox(height: 20),
                       const Text(
                         "Booking Info",

@@ -3,10 +3,13 @@ import 'dart:ui';
 import 'package:cardealer/Assistance/ColorHelper.dart';
 import 'package:cardealer/controller/bottom_navigation_controller.dart';
 import 'package:cardealer/screens/Home_screen.dart';
+import 'package:cardealer/screens/MessageToAdmin.dart';
 import 'package:cardealer/screens/categories_screen.dart';
 import 'package:cardealer/screens/profile_screen.dart';
+import 'package:cardealer/screens/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:lottie/lottie.dart';
 
 import 'ChatBot_Screen.dart';
@@ -39,11 +42,14 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context){
+    BottomNavigationController controller =
     Get.put(BottomNavigationController());
 
     return Scaffold(
       extendBody: true, // allows nav bar to float over body
       body: _navigationList[_selectedIndex],
+      // Floating Action Button for Chat
+      // Floating Action Button for Chat
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 70, right: 10),
         child: Container(
@@ -135,9 +141,8 @@ class _MainScreenState extends State<MainScreen> {
 
       // Creative Bottom Nav
       bottomNavigationBar: Container(
-        // margin: const EdgeInsets.all(6),
-        padding: const EdgeInsets.all(2),
-        height: 86,
+        margin: const EdgeInsets.all(12),
+        height: 75,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
@@ -191,10 +196,10 @@ class _MainScreenState extends State<MainScreen> {
                 onTap: _navigationBar,
                 selectedItemColor: Colors.purpleAccent,
                 unselectedItemColor: Colors.white70,
-                
+
                 showSelectedLabels: true,
                 showUnselectedLabels: false,
-                selectedFontSize: 10,
+                selectedFontSize: 12,
                 unselectedFontSize: 0,
 
                 items: List.generate(4, (index) {
@@ -211,13 +216,13 @@ class _MainScreenState extends State<MainScreen> {
 
                   return BottomNavigationBarItem(
                     label: isSelected ? labels[index] : "",
-                    icon: AnimatedScale(
-                      scale: isSelected ? 1.1 : 1.0,
+                    icon: AnimatedScale(   // ✅ makes selected slightly bigger
+                      scale: isSelected ? 1.2 : 1.0,
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.easeOut,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8), // ✅ slightly reduced to prevent overflow
                         decoration: BoxDecoration(
                           gradient: isSelected
                               ? LinearGradient(
@@ -232,14 +237,14 @@ class _MainScreenState extends State<MainScreen> {
                           color: isSelected
                               ? null
                               : Colors.purpleAccent.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: Colors.white.withOpacity(0.3),
                           ),
                         ),
                         child: Icon(
                           icons[index],
-                          size: isSelected ? 22 : 20,
+                          size: isSelected ? 26 : 22, // ✅ selected bigger icon
                         ),
                       ),
                     ),

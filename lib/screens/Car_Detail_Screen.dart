@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 import '../Model/Car_Mode.dart';
+import '../Model/Price_Formatter.dart';
 import '../Model/Wishlist_Manager.dart';
 import 'Booking_Page.dart';
 
@@ -194,7 +195,8 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "₹${widget.car.totalPrice}",
+                            // "₹${widget.car.totalPrice}",
+                            '₹ ${formatIndianPrice(widget.car.totalPrice)}',
                             style: const TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
@@ -233,9 +235,9 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _featureTile(Icons.event_seat, "Capacity",
-                              "${widget.car.seats} seats"),
+                              "${widget.car.seats} Seats"),
                           _featureTile(Icons.speed, "Top Speed",
-                              "${widget.car.topSpeed} km/h"),
+                              "${widget.car.topSpeed} Km/H"),
                           _featureTile(Icons.bolt, "Power",
                               "${widget.car.horsepower} HP"),
                         ],
@@ -248,6 +250,8 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                               widget.car.transmission),
                           _featureTile(Icons.local_gas_station, "Fuel Tank",
                               "${widget.car.fuelTankCapacity} L"),
+                          _featureTile(Icons.eco, "Mileage",
+                              "${widget.car.mileage} Km/L"),
                         ],
                       ),
 

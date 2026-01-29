@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Assistance/ColorHelper.dart';
+import '../global/global.dart';
+import '../screens/login_screen.dart';
 
 class TestDriveHistoryPage extends StatefulWidget {
   const TestDriveHistoryPage({Key? key}) : super(key: key);
@@ -20,28 +22,37 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
   @override
   void initState() {
     super.initState();
+
+    // 🚫 Block guest users
+    if (isGuest || FirebaseAuth.instance.currentUser == null) {
+      _isLoading = false;
+      return;
+    }
+
     _loadTestDriveHistory();
   }
 
   Future<void> _loadTestDriveHistory() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId == null) return;
+    if (userId == null) {
+      setState(() => _isLoading = false);
+      return;
+    }
 
     final dbRef = FirebaseDatabase.instance.ref().child('testDrive/$userId');
     final snapshot = await dbRef.get();
 
     if (snapshot.exists) {
-      final data = snapshot.value as Map<dynamic, dynamic>;
-      final history = data.values.map((entry) => Map<dynamic, dynamic>.from(entry)).toList();
+      final data = Map<dynamic, dynamic>.from(snapshot.value as Map);
+      final history =
+      data.values.map((e) => Map<dynamic, dynamic>.from(e)).toList();
 
       setState(() {
-        _bookings = history.reversed.toList(); // Most recent first
+        _bookings = history.reversed.toList();
         _isLoading = false;
       });
     } else {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -69,18 +80,63 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
             ],
           ),
           child: AppBar(
-            title: const Text("Test Drive History",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
+            title: const Text(
+              "Test Drive History",
+              style:
+              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
         ),
       ),
-      body: _isLoading
+
+      /// ---------------- GUEST GUARD ----------------
+      body: isGuest || FirebaseAuth.instance.currentUser == null
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock_outline,
+                size: 80, color: Colors.grey),
+            const SizedBox(height: 15),
+            const Text(
+              "Login Required",
+              style:
+              TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "Please login to view test drive history",
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSys.purple1,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30, vertical: 12),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LoginScreen(),
+                  ),
+                );
+              },
+              child: const Text(
+                "Go to Login",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        ),
+      )
+          : _isLoading
           ? Center(
         child: Lottie.asset(
-          "images/Travel_app.json", // ✅ Your loader
+          "images/Travel_app.json",
           width: 250,
           height: 250,
         ),
@@ -91,7 +147,7 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Lottie.asset(
-              "images/empty_box.json", // optional empty-state animation
+              "images/empty_box.json",
               width: 200,
               height: 200,
             ),
@@ -99,125 +155,94 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
             const Text(
               "No test drives found",
               style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
-              ),
+                  fontSize: 16,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ),
       )
           : ListView.builder(
         itemCount: _bookings.length,
-        padding:
-        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: const EdgeInsets.symmetric(
+            vertical: 8, horizontal: 12),
         itemBuilder: (context, index) {
           final booking = _bookings[index];
-          final date = booking['testDriveDate'] ?? '';
-          final time = booking['testDriveTime'] ?? '';
-          final status = booking['status'] ?? 'pending'; // 🔹 status
+          final status =
+              booking['status']?.toString().toLowerCase() ??
+                  'pending';
+
+          Color chipColor;
+          switch (status) {
+            case 'approved':
+              chipColor = Colors.green.shade100;
+              break;
+            case 'rejected':
+              chipColor = Colors.red.shade100;
+              break;
+            default:
+              chipColor = Colors.orange.shade100;
+          }
+
           final timestamp = booking['timestamp'] != null
-              ? DateFormat('dd MMM yyyy, hh:mm a')
-              .format(DateTime.parse(booking['timestamp']))
+              ? DateFormat('dd MMM yyyy, hh:mm a').format(
+            DateTime.parse(booking['timestamp']),
+          )
               : '';
 
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+                borderRadius: BorderRadius.circular(16)),
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Car Name & Price
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         booking['carName'] ?? 'Unknown Car',
                         style: const TextStyle(
                             fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87),
+                            fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '₹${booking['price'] ?? '-'}',
                         style: const TextStyle(
-                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.blueAccent),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-
-                  // Status chip
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Chip(
-                      label: Text(
-                        status.toUpperCase(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold),
-                      ),
-                      backgroundColor: status == "approved"
-                          ? Colors.green.shade100
-                          : status == "rejected"
-                          ? Colors.red.shade100
-                          : Colors.orange.shade100,
+                  Chip(
+                    label: Text(
+                      status.toUpperCase(),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold),
                     ),
+                    backgroundColor: chipColor,
                   ),
                   const SizedBox(height: 8),
-
-                  // Date & Time stacked vertically
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Chip(
-                        label: Text('Date: $date'),
-                        backgroundColor: Colors.blue.shade50,
-                      ),
-                      const SizedBox(height: 4),
-                      Chip(
-                        label: Text('Time: $time'),
-                        backgroundColor: Colors.green.shade50,
-                      ),
-                    ],
+                  Text(
+                      'Date: ${booking['testDriveDate'] ?? '-'}'),
+                  Text(
+                      'Time: ${booking['testDriveTime'] ?? '-'}'),
+                  const SizedBox(height: 6),
+                  Text(
+                    booking['address'] ?? 'No Address',
+                    style:
+                    const TextStyle(color: Colors.black54),
                   ),
-                  const SizedBox(height: 8),
-
-                  // Address
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on,
-                          size: 18, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          booking['address'] ?? 'No Address',
-                          style:
-                          const TextStyle(color: Colors.black54),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Booking Timestamp
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today,
-                          size: 18, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Booked on: $timestamp',
-                        style:
-                        const TextStyle(color: Colors.black54),
-                      ),
-                    ],
+                  const SizedBox(height: 6),
+                  Text(
+                    'Booked on: $timestamp',
+                    style:
+                    const TextStyle(color: Colors.black54),
                   ),
                 ],
               ),
