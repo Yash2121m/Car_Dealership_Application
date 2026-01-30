@@ -3,6 +3,7 @@ import 'package:cardealer/screens/Car_Detail_Screen.dart';
 import 'package:cardealer/screens/ChatBot_Screen.dart';
 import 'package:cardealer/screens/wishlist.dart';
 import 'package:flutter/material.dart';
+import '../Model/Price_Formatter.dart';
 import 'BrandCarScreen.dart';
 import 'Maintenance_Reminder_Screen.dart';
 import 'MessageToAdmin.dart';
@@ -484,7 +485,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 4),
-                  Text("₹${car.totalPrice}",
+                  Text('₹ ${formatIndianPrice(car.totalPrice)}',
                       style: const TextStyle(
                           color: Colors.green,
                           fontSize: 14,

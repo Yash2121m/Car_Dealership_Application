@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String formatIndianPrice(num price) {
   if (price >= 10000000) {
     // Crores
@@ -12,5 +14,17 @@ String formatIndianPrice(num price) {
     return "${(price / 1000).toStringAsFixed(1)} K";
   } else {
     return price.toString();
+  }
+}
+
+
+String formatDatePretty(String? isoDate) {
+  if (isoDate == null || isoDate.isEmpty) return '-';
+
+  try {
+    final date = DateTime.parse(isoDate);
+    return DateFormat('d MMMM, yyyy').format(date);
+  } catch (e) {
+    return '-';
   }
 }

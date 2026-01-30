@@ -1,14 +1,17 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Assistance/ColorHelper.dart';
+import '../Model/Price_Formatter.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
   const AdminOrdersScreen({Key? key}) : super(key: key);
 
   @override
-  _AdminOrdersScreenState createState() => _AdminOrdersScreenState();
+  State<AdminOrdersScreen> createState() => _AdminOrdersScreenState();
 }
 
 class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
@@ -26,165 +29,153 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     }
   }
 
-  Widget _buildSection(String title, List<Map<String, dynamic>> orders) {
-    if (orders.isEmpty) return const SizedBox.shrink();
+  Widget _buildStatCard(
+      String label, int count, Color color, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [color.withOpacity(0.85), color],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.35),
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white, size: 26),
+            const SizedBox(height: 6),
+            Text(
+              "$count",
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            Text(label, style: const TextStyle(color: Colors.white70)),
+          ],
+        ),
+      ),
+    );
+  }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+  Widget _buildHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          Container(
+            width: 6,
+            height: 28,
+            decoration: BoxDecoration(
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style:
+            const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrderCard(Map<String, dynamic> booking) {
+    String status = booking["status"] ?? "Pending";
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.white,
+            _getStatusColor(status).withOpacity(0.08)
+          ],
         ),
-        ...orders.map((booking) {
-          String status = booking["status"] ?? "Pending";
-          return Card(
-            elevation: 6,
-            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        OrderDetailScreen(bookingData: booking),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const Icon(Icons.directions_car,
-                        size: 40, color: Colors.blue),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            booking["carName"] ?? "Unknown Car",
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 6),
-                          Text("User: ${booking["userName"] ?? "N/A"}"),
-                          Text("Price: ₹${booking["finalPrice"] ?? "0"}"),
-                        ],
-                      ),
-                    ),
-                    Chip(
-                      label: Text(status.toUpperCase(),
-                          style: const TextStyle(color: Colors.white)),
-                      backgroundColor: _getStatusColor(status),
-                    ),
-                  ],
-                ),
-              ),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(16),
+        leading: CircleAvatar(
+          radius: 26,
+          backgroundColor:
+          _getStatusColor(status).withOpacity(0.15),
+          child: const Icon(Icons.directions_car),
+        ),
+        title: Text(booking["carName"] ?? "Unknown Car"),
+        subtitle: Text(
+          "₹${formatIndianPrice(booking["finalPrice"])}",
+        ),
+        trailing: Chip(
+          backgroundColor: _getStatusColor(status),
+          label: Text(status.toUpperCase(),
+              style: const TextStyle(color: Colors.white)),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+                  OrderDetailScreen(bookingData: booking),
             ),
           );
-        }).toList(),
-      ],
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [ColorSys.purple1, ColorSys.purple2],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius:
-            const BorderRadius.vertical(bottom: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              )
-            ],
-          ),
-          child: AppBar(
-            title: const Text("Ordered Cars",
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold)),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-        ),
-      ),
+      appBar: _buildGradientAppBar("Ordered Cars"),
       body: StreamBuilder(
         stream: bookingsRef.onValue,
-        builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.snapshot.value == null) {
+        builder:
+            (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+          if (!snapshot.hasData ||
+              snapshot.data!.snapshot.value == null) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset(
-                    "images/empty_box.json", // optional empty-state animation
-                    width: 200,
-                    height: 200,
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    "No Orders Found",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+              child: Lottie.asset("images/empty_box.json",
+                  width: 200),
             );
           }
 
           Map<dynamic, dynamic> users =
-          snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
+          snapshot.data!.snapshot.value as Map;
 
-          List<Map<String, dynamic>> approvedOrders = [];
-          List<Map<String, dynamic>> pendingOrders = [];
-          List<Map<String, dynamic>> rejectedOrders = [];
+          List<Map<String, dynamic>> approved = [];
+          List<Map<String, dynamic>> pending = [];
+          List<Map<String, dynamic>> rejected = [];
 
-          // Collect bookings and categorize
-          users.forEach((userId, userBookings) {
-            if (userBookings is Map) {
-              userBookings.forEach((bookingId, bookingData) {
-                if (bookingData is Map) {
+          users.forEach((userId, bookings) {
+            if (bookings is Map) {
+              bookings.forEach((bookingId, data) {
+                if (data is Map) {
                   final booking = {
                     "userId": userId,
                     "bookingId": bookingId,
-                    ...Map<String, dynamic>.from(bookingData),
+                    ...Map<String, dynamic>.from(data),
                   };
 
-                  String status = booking["status"]?.toString().toLowerCase() ?? "pending";
+                  String status = booking["status"] ?? "pending";
                   if (status == "approved") {
-                    approvedOrders.add(booking);
+                    approved.add(booking);
                   } else if (status == "rejected") {
-                    rejectedOrders.add(booking);
+                    rejected.add(booking);
                   } else {
-                    pendingOrders.add(booking);
+                    pending.add(booking);
                   }
                 }
               });
@@ -193,35 +184,126 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
 
           return ListView(
             children: [
-              _buildSection("✅ Approved Orders", approvedOrders),
-              _buildSection("⏳ Pending Orders", pendingOrders),
-              _buildSection("❌ Rejected Orders", rejectedOrders),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    _buildStatCard("Approved", approved.length,
+                        Colors.green, Icons.check_circle),
+                    _buildStatCard("Pending", pending.length,
+                        Colors.orange, Icons.hourglass_top),
+                    _buildStatCard("Rejected", rejected.length,
+                        Colors.red, Icons.cancel),
+                  ],
+                ),
+              ),
+              if (approved.isNotEmpty) _buildHeader("Approved Orders"),
+              ...approved.map(_buildOrderCard),
+              if (pending.isNotEmpty) _buildHeader("Pending Orders"),
+              ...pending.map(_buildOrderCard),
+              if (rejected.isNotEmpty) _buildHeader("Rejected Orders"),
+              ...rejected.map(_buildOrderCard),
             ],
           );
         },
       ),
     );
   }
+
+  PreferredSizeWidget _buildGradientAppBar(String title) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(60),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient:
+          LinearGradient(colors: [ColorSys.purple1, ColorSys.purple2]),
+        ),
+        child: AppBar(
+          title: Text(title,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
+    );
+  }
 }
+
+/* ================= ORDER DETAILS ================= */
 
 class OrderDetailScreen extends StatelessWidget {
   final Map<dynamic, dynamic> bookingData;
-  const OrderDetailScreen({Key? key, required this.bookingData})
-      : super(key: key);
+  const OrderDetailScreen({super.key, required this.bookingData});
+
+  // ✨ NEW: Base64 decode
+  Uint8List? _decodeBase64(String? data) {
+    if (data == null || data.isEmpty) return null;
+    try {
+      return base64Decode(data);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // ✨ NEW: Document image widget (same UI style)
+  Widget _buildDocument(
+      BuildContext context, String label, String? base64Data) {
+    final bytes = _decodeBase64(base64Data);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label,
+            style:
+            const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 6),
+        bytes != null
+            ? GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    FullScreenImageViewer(imageBytes: bytes),
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.memory(
+              bytes,
+              height: 140,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+        )
+            : const Text("No document uploaded",
+            style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 12),
+      ],
+    );
+  }
 
   Widget buildInfoCard(String title, List<Widget> children) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      shape:
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [Text(title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            children: [
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
               const Divider(),
-              ...children]),
+              ...children,
+            ]),
       ),
     );
   }
@@ -266,42 +348,74 @@ class OrderDetailScreen extends StatelessWidget {
             Text("Car: ${bookingData["carName"]}"),
           ]),
           buildInfoCard("User Information", [
-            Text("Name: ${bookingData["userName"] ?? "N/A"}"),
-            Text("Email: ${bookingData["userEmail"] ?? "N/A"}"),
-            Text("Phone: ${bookingData["userPhone"] ?? "N/A"}"),
+            Text("Name: ${bookingData["userName"]}"),
+            Text("Email: ${bookingData["userEmail"]}"),
+            Text("Phone: ${bookingData["userPhone"]}"),
           ]),
           buildInfoCard("Pricing", [
-            Text("Final Price: ₹${bookingData["finalPrice"] ?? "0"}"),
-            Text("Accessories: ₹${bookingData["accessoriesPrice"] ?? "0"}"),
-            Text(
-                "Insurance: ${bookingData["insurancePlan"] ?? "N/A"} (₹${bookingData["insurancePrice"] ?? "0"})"),
-            Text(
-                "Warranty: ${bookingData["warrantyPlan"] ?? "N/A"} (₹${bookingData["warrantyPrice"] ?? "0"})"),
-          ]),
-          buildInfoCard("Payment", [
-            Text("Payment Done: ${bookingData["paymentDone"] ?? false}"),
-            Text("Payment ID: ${bookingData["paymentId"] ?? "N/A"}"),
+            Text("Final Price: ₹${bookingData["finalPrice"]}"),
+            Text("Accessories: ₹${bookingData["accessoriesPrice"]}"),
+            Text("Insurance: ${bookingData["insurancePlan"]}"),
+            Text("Warranty: ${bookingData["warrantyPlan"]}"),
           ]),
           buildInfoCard("Order Status", [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Status: $status",
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold)),
                 Chip(
                   label: Text(status.toUpperCase(),
                       style: const TextStyle(color: Colors.white)),
-                  backgroundColor: status.toLowerCase() == "approved"
+                  backgroundColor: status == "approved"
                       ? Colors.green
-                      : status.toLowerCase() == "rejected"
+                      : status == "rejected"
                       ? Colors.red
                       : Colors.orange,
                 ),
               ],
             ),
-            Text("Order Date: ${bookingData["timestamp"] ?? "N/A"}"),
+            const SizedBox(height: 6),
+            Text(
+                "Order Date: ${formatDatePretty(bookingData["timestamp"])}"),
+          ]),
+
+          // ✨ NEW CARD — NO UI CHANGE
+          buildInfoCard("Uploaded Documents", [
+            _buildDocument(context, "Aadhaar",
+                bookingData["aadhaarBase64"]),
+            _buildDocument(context, "PAN",
+                bookingData["panBase64"]),
+            _buildDocument(context, "Salary Slip",
+                bookingData["salarySlipBase64"]),
           ]),
         ],
+      ),
+    );
+  }
+}
+
+/* ================= FULL SCREEN VIEW ================= */
+
+class FullScreenImageViewer extends StatelessWidget {
+  final Uint8List imageBytes;
+  const FullScreenImageViewer({super.key, required this.imageBytes});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Center(
+        child: InteractiveViewer(
+          minScale: 1,
+          maxScale: 5,
+          child: Image.memory(imageBytes),
+        ),
       ),
     );
   }
