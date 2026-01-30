@@ -49,6 +49,13 @@ class _AdminHomePageState extends State<AdminHomePage>
     )..forward();
   }
 
+  Future<void> _onRefresh() async {
+    fetchOrderStats();
+    fetchUserName();
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+
   void fetchUserName() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
@@ -170,31 +177,33 @@ class _AdminHomePageState extends State<AdminHomePage>
 
   // ---------- SUMMARY PAGE ----------
   Widget _buildAdminSummaryPage() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          _buildGreetingHeader(),
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildGreetingHeader(),
 
-          // 🔔 REAL-TIME ALERT
-          _buildPendingAlert(),
+            _buildPendingAlert(),
 
-          _buildKpiRow(),
+            _buildKpiRow(),
 
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          _buildDashboardCard(
-              "Pending Orders", pendingCount, Colors.orange, Icons.pending),
-          _buildDashboardCard(
-              "Approved Orders", approvedCount, Colors.green, Icons.check),
-          _buildDashboardCard(
-              "Rejected Orders", rejectedCount, Colors.red, Icons.close),
+            _buildDashboardCard(
+                "Pending Orders", pendingCount, Colors.orange, Icons.pending),
+            _buildDashboardCard(
+                "Approved Orders", approvedCount, Colors.green, Icons.check),
+            _buildDashboardCard(
+                "Rejected Orders", rejectedCount, Colors.red, Icons.close),
 
-          _quickActions(),
+            _quickActions(),
 
-          const SizedBox(height: 150,)
-        ],
+            const SizedBox(height: 150),
+          ],
+        ),
       ),
     );
   }

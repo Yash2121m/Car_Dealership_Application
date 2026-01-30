@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 
 import '../Model/Car.dart';
 import '../Model/Car_Mode.dart';
+import '../Model/Price_Formatter.dart';
 import '../global/global.dart';
 import '../screens/login_screen.dart';
 import 'BookingDetailScreen.dart';
@@ -167,7 +168,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
                   "EMI: ₹${booking['monthly_emi'] ?? '-'}\nTotal: ₹${booking['total_amount_payable'] ?? '-'}",
                 )
                     : Text(
-                  "Price: ₹${booking['finalPrice'] ?? '-'}",
+                  "Price: ₹${formatIndianPrice(booking['finalPrice']) ?? '-'}",
                 ),
                 trailing: Chip(
                   backgroundColor: statusColor,

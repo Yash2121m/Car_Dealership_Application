@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:lottie/lottie.dart';
 import '../Assistance/ColorHelper.dart';
+import '../Model/Price_Formatter.dart';
 
 enum TestDriveFilter { all, pending, approved, rejected }
 
@@ -230,7 +231,7 @@ class _AdminTestDriveApprovalScreenState
             children: [
               const Icon(Icons.calendar_today, size: 18),
               const SizedBox(width: 6),
-              Text(request['testDriveDate']),
+              Text(formatDatePretty(request['testDriveDate'])),
               const SizedBox(width: 14),
               const Icon(Icons.access_time, size: 18),
               const SizedBox(width: 6),

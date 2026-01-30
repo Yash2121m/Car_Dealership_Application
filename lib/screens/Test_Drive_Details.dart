@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../Assistance/ColorHelper.dart';
+import '../Model/Price_Formatter.dart';
 import '../global/global.dart';
 import '../screens/login_screen.dart';
 
@@ -229,7 +230,7 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                      'Date: ${booking['testDriveDate'] ?? '-'}'),
+                      'Date: ${formatDatePretty(booking['testDriveDate']) ?? '-'}'),
                   Text(
                       'Time: ${booking['testDriveTime'] ?? '-'}'),
                   const SizedBox(height: 6),
