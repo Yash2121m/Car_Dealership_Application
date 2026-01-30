@@ -426,7 +426,7 @@ List<Car> suvCars = [
     description: 'The BMW X5 is a luxury performance SUV that blends athletic handling with premium comfort. Known for its powerful road presence and refined interior, it offers excellent driving dynamics both on highways and rough terrain.',
     transmission: 'Manual',
     seats: 5,
-    totalPrice: 10500000,
+    totalPrice: 10500,
     topSpeed: 200,
     mileage: 12.5,
     horsepower: 150,
