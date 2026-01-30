@@ -198,7 +198,8 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
         padding: const EdgeInsets.all(16),
         child: BarChart(
           BarChartData(
-            maxY: (totalRevenue + accessoriesRevenue) * 1.2,
+            minY: 0,
+            maxY: _calculateMaxY(),
             barTouchData: BarTouchData(
               enabled: true,
               touchTooltipData: BarTouchTooltipData(
@@ -230,10 +231,23 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
               ]),
             ],
             titlesData: FlTitlesData(
-              topTitles:
-              AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles:
-              AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 50,
+                  interval: _calculateInterval(_calculateMaxY()),
+                  getTitlesWidget: (value, _) {
+                    return Text(
+                      formatRevenue(value),
+                      style: const TextStyle(fontSize: 11),
+                    );
+                  },
+                ),
+              ),
+
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
@@ -252,6 +266,31 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
       ),
     );
   }
+
+  String formatRevenue(double value) {
+    if (value >= 10000000) {
+      return "₹${(value / 10000000).toStringAsFixed(1)}Cr";
+    } else if (value >= 100000) {
+      return "₹${(value / 100000).toStringAsFixed(1)}L";
+    } else if (value >= 1000) {
+      return "₹${(value / 1000).toStringAsFixed(1)}K";
+    }
+    return "₹${value.toInt()}";
+  }
+
+  double _calculateMaxY() {
+    final total = totalRevenue + accessoriesRevenue;
+    if (total <= 1000) return 1000;
+    if (total <= 5000) return 5000;
+    if (total <= 10000) return 10000;
+    return total * 1.2;
+  }
+
+  double _calculateInterval(double maxY) {
+    return maxY / 4;
+  }
+
+
 
   // ======================= UI =======================
   @override
