@@ -9,7 +9,7 @@ import '../Model/Car_Mode.dart';
 import '../Model/user_model.dart';
 import 'InsuranceWarrantyPage.dart';
 import 'AccessoriesScreen.dart';
-import 'login_screen.dart'; // ✅ Import Accessories Screen
+import 'login_screen.dart';
 
 class BookingPage extends StatefulWidget {
   final Car car;
