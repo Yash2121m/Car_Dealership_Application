@@ -19,7 +19,7 @@ class BookingPage extends StatefulWidget {
   @override
   State<BookingPage> createState() => _BookingPageState();
 }
-
+// Testing
 class _BookingPageState extends State<BookingPage> {
   final _alternateAddressController = TextEditingController();
   bool _useRegisteredAddress = true;
