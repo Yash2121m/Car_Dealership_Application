@@ -14,7 +14,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Car> filteredCars = [];
   List<Car> allCars = [];
 
-  RangeValues priceRange = const RangeValues(100000, 1000000); // ₹1L–₹10L
+  RangeValues priceRange = const RangeValues(100000, 1000000);
   RangeValues mileageRange = const RangeValues(10, 30);
   double minMileage = 10;
   double maxMileage = 30;
@@ -52,7 +52,7 @@ class _SearchScreenState extends State<SearchScreen> {
       return matchesSearch && matchesPrice && matchesBrand && matchesTransmission && matchesSeats && matchesBodyType && matchesMileage;
     }).toList();
 
-    // Sorting
+
     switch (selectedSort) {
       case 'Price: Low to High':
         filteredCars.sort((a, b) => a.totalPrice.compareTo(b.totalPrice));
@@ -109,7 +109,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Column(
         children: [
-          // Search Box
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -124,11 +124,11 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
 
-          // Filters as ExpansionTile
+
           ExpansionTile(
             title: const Text("Filters"),
             children: [
-              // Sorting
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: DropdownButton<String>(
@@ -150,7 +150,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
 
-              // Price Range
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Column(
@@ -172,7 +172,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
 
-              // Mileage Range
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Column(
@@ -197,7 +197,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
 
-              // Filter Chips
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Wrap(
@@ -222,7 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
 
-          // Filtered Cars List
+
           Expanded(
             child: filteredCars.isEmpty
                 ? const Center(child: Text("No cars found matching your criteria"))
@@ -240,7 +240,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     child: Stack(
                       children: [
-                        // Car Image
+
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
@@ -250,7 +250,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        // Gradient overlay
+
                         Container(
                           height: 180,
                           decoration: BoxDecoration(
@@ -262,7 +262,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                           ),
                         ),
-                        // Car Info & Wishlist
+
                         Positioned(
                           bottom: 16,
                           left: 16,
@@ -270,7 +270,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Car Name & Price
+
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -294,7 +294,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   ),
                                 ],
                               ),
-                              // Wishlist Icon
+
                               IconButton(
                                 icon: Icon(
                                   wishlist.contains(car.name)

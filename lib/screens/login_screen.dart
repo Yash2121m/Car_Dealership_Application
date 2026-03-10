@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool passwordVisible = false;
 
-  /// ---------------- USER LOGIN ----------------
+
   void submit() async {
     if (form.currentState!.validate()) {
       try {
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Fluttertoast.showToast(msg: "Successfully Logged In");
 
-          // ADMIN LOGIN
+
           if (currentUser!.email == "yashspatil2121m@gmail.com") {
             Navigator.pushReplacement(
               context,
@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// ---------------- GUEST LOGIN ----------------
+
   void guestLogin() {
     isGuest = true;
     currentUser = null;
@@ -134,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
 
-                      /// ---------------- EMAIL & PASSWORD ----------------
+
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Column(
@@ -195,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      /// ---------------- LOGIN BUTTON ----------------
+
                       FadeInUp(
                         duration: const Duration(milliseconds: 1400),
                         child: Padding(
@@ -219,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      /// ---------------- GUEST BUTTON ----------------
+
                       FadeInUp(
                         duration: const Duration(milliseconds: 1500),
                         child: Padding(
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      /// ---------------- FORGOT & SIGNUP ----------------
+
                       FadeInUp(
                         duration: const Duration(milliseconds: 1600),
                         child: TextButton(
@@ -292,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              /// ---------------- IMAGE ----------------
+
               FadeInUp(
                 duration: const Duration(milliseconds: 1200),
                 child: Container(

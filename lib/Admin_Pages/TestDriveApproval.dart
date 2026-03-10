@@ -93,7 +93,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- APP BAR ----------------
+
   PreferredSizeWidget _buildAppBar() {
     return PreferredSize(
       preferredSize: const Size.fromHeight(60),
@@ -117,7 +117,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- SUMMARY CHIPS ----------------
+
   Widget _buildSummaryRow(int pending, int approved, int rejected) {
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -154,7 +154,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- FILTER TABS ----------------
+
   Widget _buildFilterTabs() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -190,7 +190,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- REQUEST CARD ----------------
+
   Widget _buildRequestCard(Map<String, dynamic> request) {
     final status = request['status'] ?? "pending";
 
@@ -278,7 +278,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- CONFIRM ACTION ----------------
+
   void _confirmAction(Map<String, dynamic> request, String status) {
     showDialog(
       context: context,
@@ -303,7 +303,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- UPDATE STATUS ----------------
+
   Future<void> _updateStatus(
       String userId, String bookingId, String status) async {
     await _testDriveRef
@@ -316,7 +316,7 @@ class _AdminTestDriveApprovalScreenState
     );
   }
 
-  // ---------------- EMPTY STATE ----------------
+
   Widget _buildEmptyState() {
     return Center(
       child: Column(

@@ -96,7 +96,7 @@ class CategoryScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(28),
                       child: Stack(
                         children: [
-                          /// 🚗 Car image with subtle purple tint
+
                           Hero(
                             tag: category['title'],
                             child: ColorFiltered(
@@ -113,7 +113,7 @@ class CategoryScreen extends StatelessWidget {
                             ),
                           ),
 
-                          /// 🌒 Dark–to–transparent gradient overlay (for contrast)
+
                           Positioned.fill(
                             child: Container(
                               decoration: BoxDecoration(
@@ -130,7 +130,7 @@ class CategoryScreen extends StatelessWidget {
                             ),
                           ),
 
-                          /// ✨ Glass info panel with mirror shine
+
                           Positioned(
                             left: 16,
                             right: 16,
@@ -156,7 +156,7 @@ class CategoryScreen extends StatelessWidget {
                                   ),
                                   child: Stack(
                                     children: [
-                                      /// mirror shine strip
+
                                       Positioned(
                                         top: 0,
                                         left: 0,
@@ -176,7 +176,7 @@ class CategoryScreen extends StatelessWidget {
                                         ),
                                       ),
 
-                                      /// content
+
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 14,
@@ -251,7 +251,7 @@ class CategoryScreen extends StatelessWidget {
             ),
           ),
 
-          // spacing so it doesn't touch glossy bottom nav
+
           const SizedBox(height: 50),
         ],
       )

@@ -24,7 +24,7 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
   void initState() {
     super.initState();
 
-    // 🚫 Block guest users
+
     if (isGuest || FirebaseAuth.instance.currentUser == null) {
       _isLoading = false;
       return;
@@ -92,7 +92,7 @@ class _TestDriveHistoryPageState extends State<TestDriveHistoryPage> {
         ),
       ),
 
-      /// ---------------- GUEST GUARD ----------------
+
       body: isGuest || FirebaseAuth.instance.currentUser == null
           ? Center(
         child: Column(

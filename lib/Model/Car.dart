@@ -1,4 +1,4 @@
-// Sedan Cars
+
 import 'Car_Mode.dart';
 
 List<Car> sedanCars = [
@@ -265,7 +265,7 @@ List<Car> sedanCars = [
   ),
 ];
 
-// SUV Cars
+
 List<Car> suvCars = [
  Car(
   images: [
@@ -531,7 +531,7 @@ List<Car> suvCars = [
   ),
 ];
 
-// Sports Cars
+
 List<Car> Coupe = [
   Car(
     images: [
@@ -680,7 +680,7 @@ List<Car> Coupe = [
   ),
 ];
 
-// Hatchback Cars
+
 List<Car> Hatchback = [
   Car(
     images: [
@@ -829,7 +829,7 @@ List<Car> Hatchback = [
   ),
 ];
 
-// Offroad Cars
+
 List<Car> Convertible = [
   Car(
     images: [

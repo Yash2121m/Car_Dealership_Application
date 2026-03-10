@@ -30,7 +30,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
   Map<dynamic, dynamic>? bookingData;
   bool isLoading = true;
 
-  // Review-related state
+
   final TextEditingController _reviewController = TextEditingController();
   int _rating = 0;
   bool _isReviewSubmitting = false;
@@ -69,12 +69,12 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       });
     } else {
       setState(() {
-        bookingData = widget.bookingData; // fallback
+        bookingData = widget.bookingData;
         isLoading = false;
       });
     }
 
-    // After booking is loaded, load the user's review (if any)
+
     await _loadUserReview();
   }
 
@@ -91,7 +91,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       return;
     }
 
-    // Determine carId (you can adjust based on your DB structure)
+
     final String carId = (bookingData?['carId'] ??
         bookingData?['car_id'] ??
         bookingData?['carName'] ??
@@ -117,7 +117,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         userReview = null;
       }
       isReviewLoading = false;
-      _isEditingReview = false; // reset edit mode when reloading
+      _isEditingReview = false;
     });
   }
 
@@ -342,7 +342,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                         ),
                       const SizedBox(height: 20),
 
-                      // Pay Now button
+
                       if (orderStatus.toLowerCase() == 'approved' &&
                           !isPaymentDone)
                         Center(
@@ -367,7 +367,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                               );
 
                               if (result == true) {
-                                await _loadBooking(); // reload Firebase booking & review
+                                await _loadBooking();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -385,7 +385,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
                       const SizedBox(height: 24),
 
-                      // Review Section (only if purchased)
+
                       if (isPaymentDone)
                         isReviewLoading
                             ? const Center(
@@ -491,7 +491,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     }
   }
 
-  // ---------- NICE REVIEW UI (form) ----------
+
   Widget _buildReviewSection({bool isEdit = false}) {
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 16),
@@ -518,7 +518,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -562,7 +562,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
             const SizedBox(height: 14),
 
-            // Rating label
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -600,7 +600,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             ),
             const SizedBox(height: 6),
 
-            // Rating stars with nicer UI
+
             Row(
               children: List.generate(5, (index) {
                 final starIndex = index + 1;
@@ -656,7 +656,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
             const SizedBox(height: 14),
 
-            // Review text field
+
             TextField(
               controller: _reviewController,
               maxLines: 3,
@@ -697,7 +697,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
             const SizedBox(height: 12),
 
-            // Submit button
+
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton.icon(
@@ -732,7 +732,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-  // ---------- NICE REVIEW UI (existing review) ----------
+
   Widget _buildExistingReview(Map review) {
     final int rating = (review['rating'] ?? 0) is int
         ? review['rating']
@@ -767,7 +767,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title + edit
+
           Row(
             children: [
               const Expanded(
@@ -824,7 +824,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
           const SizedBox(height: 8),
 
-          // Stars row
+
           Row(
             children: List.generate(5, (i) {
               final filled = (i + 1) <= rating;
@@ -841,7 +841,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
 
           const SizedBox(height: 10),
 
-          // Review text
+
           Text(
             review["review"] ?? "",
             style: const TextStyle(
@@ -875,7 +875,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
     );
   }
 
-  // Submit or update review
+
   Future<void> _submitReview() async {
     if (_rating == 0 || _reviewController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -908,7 +908,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         .ref()
         .child("carReviews")
         .child(carId)
-        .child(user.uid); // unique per user per car
+        .child(user.uid);
 
     setState(() {
       _isReviewSubmitting = true;
@@ -942,7 +942,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         _isReviewSubmitting = false;
       });
 
-      // Reload from DB to show latest
+
       await _loadUserReview();
     } catch (e) {
       setState(() {

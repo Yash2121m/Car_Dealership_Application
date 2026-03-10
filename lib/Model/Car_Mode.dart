@@ -1,5 +1,5 @@
 class Car {
-  final List<String> images; // Changed from String to List<String>
+  final List<String> images;
   final String name;
   final String description;
   final String transmission;
@@ -9,7 +9,7 @@ class Car {
   final double mileage;
   final int horsepower;
 
-  // Specs
+
   final String bodyType;
   final int numberOfDoors;
   final int totalLength;

@@ -44,7 +44,7 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
     DatabaseEvent event = await userRef.once();
 
     if (event.snapshot.value != null) {
-      print("Fetched Data: ${event.snapshot.value}"); // Debugging log
+      print("Fetched Data: ${event.snapshot.value}");
 
       if (event.snapshot.value is Map<dynamic, dynamic>) {
         Map<dynamic, dynamic> data = Map<String, dynamic>.from(event.snapshot.value as Map);
@@ -79,12 +79,12 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
     DatabaseEvent event = await userRef.once();
 
     if (event.snapshot.value != null) {
-      print("Fetched Data: ${event.snapshot.value}"); // Debugging log
+      print("Fetched Data: ${event.snapshot.value}");
 
       if (event.snapshot.value is Map<dynamic, dynamic>) {
         Map<dynamic, dynamic> data = Map<String, dynamic>.from(event.snapshot.value as Map);
 
-        // Ensuring state updates properly before proceeding
+
         setState(() {
           userName = data["name"] ?? "Unknown";
           userPhone = data["phone"] ?? "No Phone";
@@ -108,7 +108,7 @@ class _EmiBookingPageState extends State<EmiBookingPage> {
       return;
     }
 
-    // Fetch user data and wait until it's updated
+
     await fetchUserDataAndWait();
 
     String finalAddress = useSavedAddress ? selectedAddress : _alternateAddressController.text.trim();

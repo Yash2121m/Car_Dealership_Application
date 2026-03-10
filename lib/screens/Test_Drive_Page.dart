@@ -29,7 +29,7 @@ class _TestDrivePageState extends State<TestDrivePage> {
   void initState() {
     super.initState();
 
-    // 🚫 Block guest users
+
     if (isGuest || FirebaseAuth.instance.currentUser == null) {
       return;
     }
@@ -143,7 +143,7 @@ class _TestDrivePageState extends State<TestDrivePage> {
         backgroundColor: ColorSys.purple2,
       ),
 
-      /// ---------------- GUEST GUARD ----------------
+
       body: isGuest || FirebaseAuth.instance.currentUser == null
           ? Center(
         child: Column(
@@ -183,7 +183,7 @@ class _TestDrivePageState extends State<TestDrivePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// CAR INFO
+
             Card(
               elevation: 6,
               shape: RoundedRectangleBorder(
@@ -208,7 +208,7 @@ class _TestDrivePageState extends State<TestDrivePage> {
             ),
             const SizedBox(height: 20),
 
-            /// ADDRESS
+
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -251,7 +251,7 @@ class _TestDrivePageState extends State<TestDrivePage> {
             ),
             const SizedBox(height: 20),
 
-            /// DATE & TIME
+
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(

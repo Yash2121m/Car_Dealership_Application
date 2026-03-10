@@ -40,10 +40,10 @@ class _SignupScreenState extends State<SignupScreen> {
         currentUser = auth.user;
 
         if (currentUser != null) {
-          // Send email verification
+
           await currentUser!.sendEmailVerification();
 
-          // Save user data
+
           Map userMap = {
             "id": currentUser!.uid,
             "name": nameTextEditingController.text.trim(),
@@ -62,7 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
           await firebaseAuth.signOut();
 
-          // Redirect to login screen
+
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (c) => const LoginScreen()));
         }

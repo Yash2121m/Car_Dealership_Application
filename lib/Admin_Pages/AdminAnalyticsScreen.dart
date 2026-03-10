@@ -40,7 +40,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
     fetchAnalytics();
   }
 
-  // ======================= DATA FETCH =======================
+
   void fetchAnalytics() {
     bookingsRef.onValue.listen((event) {
       if (event.snapshot.value == null) return;
@@ -62,7 +62,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
               return;
             }
 
-            // ---------- FILTER ----------
+
             if (!isAllTime) {
               if (selectedMonth != null &&
                   bookingDate.month != selectedMonth) return;
@@ -118,7 +118,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
     });
   }
 
-  // ======================= FILTER UI =======================
+
   Widget _buildFilterRow() {
     return Card(
       elevation: 4,
@@ -189,7 +189,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
     );
   }
 
-  // ======================= BAR CHART =======================
+
   Widget _buildRevenueBarChart() {
     return Card(
       elevation: 6,
@@ -292,7 +292,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
 
 
 
-  // ======================= UI =======================
+
   @override
   Widget build(BuildContext context) {
     final String titleText = isAllTime
@@ -412,7 +412,7 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen> {
   }
 }
 
-// ======================= PIE CHART =======================
+
 class _OrdersPieChart extends StatelessWidget {
   final int approved;
   final int pending;
@@ -444,7 +444,7 @@ class _OrdersPieChart extends StatelessWidget {
   }
 }
 
-// ======================= CARDS =======================
+
 Widget _gradientStatCard(
     String title, String value, IconData icon, List<Color> colors) {
   return Container(

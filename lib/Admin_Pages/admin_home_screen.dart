@@ -99,7 +99,7 @@ class _AdminHomePageState extends State<AdminHomePage>
     });
   }
 
-  // ---------- GLASS DASHBOARD CARD ----------
+
   Widget _buildDashboardCard(
       String title, int count, Color color, IconData icon) {
     return Padding(
@@ -159,7 +159,7 @@ class _AdminHomePageState extends State<AdminHomePage>
     );
   }
 
-  // ---------- GLASS DRAWER TILE ----------
+
   Widget _drawerTile(IconData icon, String title, Widget page) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
@@ -175,7 +175,7 @@ class _AdminHomePageState extends State<AdminHomePage>
     );
   }
 
-  // ---------- SUMMARY PAGE ----------
+
   Widget _buildAdminSummaryPage() {
     return RefreshIndicator(
       onRefresh: _onRefresh,
@@ -432,7 +432,7 @@ class _AdminHomePageState extends State<AdminHomePage>
         ),
       ),
 
-      // ---------- GLASS DRAWER ----------
+
       drawer: Drawer(
         backgroundColor: Colors.transparent,
         elevation: 0,

@@ -19,7 +19,7 @@ class BookingPage extends StatefulWidget {
   @override
   State<BookingPage> createState() => _BookingPageState();
 }
-// Testing
+
 class _BookingPageState extends State<BookingPage> {
   final _alternateAddressController = TextEditingController();
   bool _useRegisteredAddress = true;
@@ -47,7 +47,7 @@ class _BookingPageState extends State<BookingPage> {
   int insurancePrice = 0;
   int warrantyPrice = 0;
 
-  // ✅ Accessories state
+
   List<Map<String, dynamic>> selectedAccessories = [];
   int accessoriesPrice = 0;
 
@@ -157,7 +157,7 @@ class _BookingPageState extends State<BookingPage> {
           'insurancePrice': insurancePrice,
           'warrantyPlan': selectedWarranty?["title"] ?? 'Not Selected',
           'warrantyPrice': warrantyPrice,
-          'accessories': selectedAccessories, // ✅ Store accessories
+          'accessories': selectedAccessories,
           'accessoriesPrice': accessoriesPrice,
           'finalPrice': totalPrice,
           'address': selectedAddress,
@@ -296,7 +296,7 @@ class _BookingPageState extends State<BookingPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Car details card
+
                   Card(
                     elevation: 6,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -314,7 +314,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Address selection
+
                   Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -351,14 +351,14 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Documents section
+
                   const Text('Upload Documents:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   _buildDocumentSection(label: 'Aadhaar', file: _aadhaarFile, onUpload: () => _pickDocument('aadhaar')),
                   _buildDocumentSection(label: 'PAN', file: _panFile, onUpload: () => _pickDocument('pan')),
                   _buildDocumentSection(label: 'Salary Slip', file: _salarySlipFile, onUpload: () => _pickDocument('salary')),
                   const SizedBox(height: 20),
 
-                  // Insurance & Warranty
+
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorSys.purple1,
@@ -392,7 +392,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // ✅ Accessories selection button
+
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorSys.purple1,
@@ -420,7 +420,7 @@ class _BookingPageState extends State<BookingPage> {
 
                   const SizedBox(height: 20),
 
-                  // Car colour selection
+
                   const Text('Choose Car Colour:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   Center(
@@ -452,7 +452,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Final price summary card
+
                   Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     color: Colors.green[50],

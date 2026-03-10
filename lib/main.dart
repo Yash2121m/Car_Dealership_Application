@@ -13,13 +13,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
-/// Background notification handler
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("🔔 Background message received: ${message.notification?.title}");
 }
 
-/// Local notification initialization
+
 Future<void> initializeLocalNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -34,10 +34,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Firebase messaging background handler
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  // Initialize local notifications
+
   await initializeLocalNotifications();
   await dotenv.load(fileName: ".env");
 
@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
   void _initFCM() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    // 🔐 Request permission (iOS)
+
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       badge: true,
@@ -68,41 +68,41 @@ class _MyAppState extends State<MyApp> {
 
     print('🔐 Permission granted: ${settings.authorizationStatus}');
 
-    // 📲 Get and print token
+
     String? token = await messaging.getToken();
     print("📲 FCM Token: $token");
 
-    // 🔔 Foreground message handler
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('📩 Foreground notification received:');
       print('Title: ${message.notification?.title}');
       print('Body: ${message.notification?.body}');
 
-      // Show as local notification too
+
       _showLocalNotification(
         message.notification?.title ?? "Notification",
         message.notification?.body ?? "",
       );
     });
 
-    // 🔃 App launched via notification from terminated state
+
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print("📦 App opened from terminated by notification: ${message.data}");
       }
     });
 
-    // 🔄 App opened from background via notification
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print("📨 App opened from background by notification: ${message.data}");
     });
   }
 
-  /// Local notification when app is in foreground
+
   void _showLocalNotification(String title, String body) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'fcm_channel', // Channel ID
-      'Push Notifications', // Channel name
+      'fcm_channel',
+      'Push Notifications',
       channelDescription: 'Channel for Firebase push notifications',
       importance: Importance.max,
       priority: Priority.high,
@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> {
     NotificationDetails(android: androidDetails);
 
     await flutterLocalNotificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique ID
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
       title,
       body,
       platformDetails,

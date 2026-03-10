@@ -26,7 +26,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     with SingleTickerProviderStateMixin{
   int _currentImageIndex = 0;
   bool _isFavorite = false;
-  bool isLoading = true; // ✅ Added
+  bool isLoading = true;
   late final AnimationController _controller;
 
   @override
@@ -35,7 +35,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     _isFavorite = WishlistManager().isInWishlist(widget.car);
     _controller = AnimationController(vsync: this);
 
-    // Simulate fetching (replace with Firebase if needed)
+
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
         setState(() => isLoading = false);
@@ -67,7 +67,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
           : SafeArea(
         child: Column(
           children: [
-            // Car Images with TopBar
+
             Stack(
               children: [
                 SizedBox(
@@ -87,7 +87,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                   ),
                 ),
 
-                // Top bar overlay
+
                 Positioned(
                   top: 8,
                   left: 12,
@@ -119,7 +119,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                   ),
                 ),
 
-                // Dot Indicator
+
                 Positioned(
                   bottom: 10,
                   left: 0,
@@ -146,7 +146,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
               ],
             ),
 
-            // Details Section
+
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(18),
@@ -161,7 +161,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Car name + body type tag
+
                       Row(
                         children: [
                           Expanded(
@@ -190,7 +190,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                       ),
                       const SizedBox(height: 6),
 
-                      // Price + Rating
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -216,7 +216,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                       ),
                       const SizedBox(height: 14),
 
-                      // Description
+
                       Text(
                         widget.car.description,
                         style: const TextStyle(
@@ -226,7 +226,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                       ),
                       const SizedBox(height: 20),
 
-                      // Highlights
+
                       const Text("Highlights",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
@@ -257,8 +257,8 @@ class _CarDetailScreenState extends State<CarDetailScreen>
 
                       const SizedBox(height: 24),
 
-                      // Specs
-                      // Specs
+
+
                       const Text(
                         "Specifications",
                         style: TextStyle(
@@ -274,7 +274,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                             decoration: BoxDecoration(
-                              // subtle frosted layer over your purple1
+
                               color: Colors.white.withOpacity(0.50),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
@@ -306,7 +306,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
 
                       const SizedBox(height: 26),
 
-                      // Buttons
+
                       Row(
                         children: [
                           Expanded(
@@ -360,7 +360,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
 
                       const SizedBox(height: 20),
 
-                      // Links
+
                       _linkRow("🚗 Wanna Test the Car ?", "Book a Test Drive",
                               () => Navigator.push(
                               context,
@@ -391,13 +391,13 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     return ClipRRect(
       borderRadius: BorderRadius.circular(50),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), // ⬅ stronger blur
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: InkWell(
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.7), // ⬅ less solid, more glass
+              color: Colors.white.withOpacity(0.7),
               border: Border.all(
                 color: Colors.white.withOpacity(0.9),
                 width: 1,
@@ -423,12 +423,12 @@ class _CarDetailScreenState extends State<CarDetailScreen>
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), // ⬅ stronger blur
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
         child: Container(
           width: 105,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            // same grey tone, just more transparent so background bleeds in
+
             color: Colors.grey.shade200.withOpacity(0.65),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
@@ -481,7 +481,7 @@ class _CarDetailScreenState extends State<CarDetailScreen>
         children: [
           Text(
             key,
-            style: const TextStyle(fontSize: 15), // same as before
+            style: const TextStyle(fontSize: 15),
           ),
           Text(
             value,

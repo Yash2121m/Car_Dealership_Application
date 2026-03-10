@@ -27,7 +27,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
   double currentMonthRevenue = 0;
   double previousMonthRevenue = 0;
 
-  // 🔹 Added analytics
+
   double yearlyTotalRevenue = 0;
   double averageMonthlyRevenue = 0;
   int? bestMonth;
@@ -41,7 +41,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
     _fetchDetailedAnalytics();
   }
 
-  // ======================= DATA =======================
+
   void _fetchDetailedAnalytics() {
     bookingsRef.onValue.listen((event) {
       if (event.snapshot.value == null) return;
@@ -76,21 +76,21 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
       final now = DateTime.now();
 
       setState(() {
-        // ✅ assign final monthly data
+
         monthlyRevenue = tempMonthly;
 
         currentMonthRevenue = monthlyRevenue[now.month] ?? 0;
         previousMonthRevenue =
             monthlyRevenue[now.month == 1 ? 12 : now.month - 1] ?? 0;
 
-        // ✅ YEARLY TOTAL (correct)
+
         yearlyTotalRevenue =
             monthlyRevenue.values.fold(0.0, (sum, v) => sum + v);
 
-        // ✅ AVG PER MONTH (correct)
+
         averageMonthlyRevenue = yearlyTotalRevenue / 12;
 
-        // ✅ BEST & WORST
+
         if (monthlyRevenue.isNotEmpty) {
           bestMonth = monthlyRevenue.entries
               .reduce((a, b) => a.value > b.value ? a : b)
@@ -107,7 +107,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
   }
 
 
-  // ======================= UI =======================
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +151,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
     );
   }
 
-  // ======================= LINE CHART =======================
+
   Widget _monthlyRevenueChart() {
     final maxValue = monthlyRevenue.values.isEmpty
         ? 0
@@ -261,7 +261,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
     return "₹${value.toInt()}";
   }
 
-  // ======================= COMPARISON =======================
+
   Widget _monthComparisonCard() {
     final diff = currentMonthRevenue - previousMonthRevenue;
     final percent = previousMonthRevenue == 0
@@ -302,7 +302,7 @@ class _AdminDetailAnalyticsState extends State<AdminDetailAnalytics> {
     );
   }
 
-  // ======================= PDF =======================
+
   Widget _exportPdfButton() {
     return ElevatedButton.icon(
       onPressed: _exportAnalyticsPdf,

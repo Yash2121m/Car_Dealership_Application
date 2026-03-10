@@ -24,7 +24,7 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   Future<void> _checkVerification() async {
-    await Future.delayed(Duration(seconds: 3)); // simulate delay
+    await Future.delayed(Duration(seconds: 3));
 
     User? user = FirebaseAuth.instance.currentUser;
     await user?.reload();

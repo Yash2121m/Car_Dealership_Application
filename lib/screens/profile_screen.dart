@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     fetchStats();
   }
 
-  /// ---------------- USER PROFILE ----------------
+
   Future<void> fetchUserProfile() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  /// ---------------- STATS ----------------
+
   Future<void> fetchStats() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
-  /// ---------------- EDIT PROFILE ----------------
+
   void showEditProfileDialog() {
     if (isGuest) return;
 
@@ -279,7 +279,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  /// ---------------- UI WIDGETS ----------------
+
 
   Widget buildProfileHeader() {
     return Container(

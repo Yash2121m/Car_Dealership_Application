@@ -61,7 +61,7 @@ class _CompareCarsScreenState extends State<CompareCarsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            // Horizontal car selection
+
             SizedBox(
               height: 120,
               child: ListView.builder(
@@ -115,7 +115,7 @@ class _CompareCarsScreenState extends State<CompareCarsScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            // Comparison table
+
             Expanded(
               child: selectedCars.length < 2
                   ? const Center(

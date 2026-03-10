@@ -85,7 +85,7 @@ class CarListScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          // 🔹 Background image
+
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -96,7 +96,7 @@ class CarListScreen extends StatelessWidget {
             ),
           ),
 
-          // 🔹 Optional dark + purple overlay to match theme
+
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class CarListScreen extends StatelessWidget {
             ),
           ),
 
-          // 🔹 Horizontal car glass carousel
+
           Positioned(
             bottom: 0,
             left: 0,
@@ -146,7 +146,7 @@ class CarListScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         child: Stack(
                           children: [
-                            // 🧊 Glass blur base
+
                             BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                               child: Container(
@@ -166,7 +166,7 @@ class CarListScreen extends StatelessWidget {
                               ),
                             ),
 
-                            // ✨ Top mirror shine strip
+
                             Positioned(
                               top: 0,
                               left: 0,
@@ -186,11 +186,11 @@ class CarListScreen extends StatelessWidget {
                               ),
                             ),
 
-                            // 🚗 Main content
+
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                // Car image + favorite glass chip
+
                                 Stack(
                                   children: [
                                     Hero(
@@ -244,7 +244,7 @@ class CarListScreen extends StatelessWidget {
                                   ],
                                 ),
 
-                                // Details section
+
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
@@ -273,7 +273,7 @@ class CarListScreen extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            // Glass price pill
+
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(14),
                                               child: BackdropFilter(
@@ -304,7 +304,7 @@ class CarListScreen extends StatelessWidget {
                                               ),
                                             ),
 
-                                            // Glass "View Details" button
+
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:

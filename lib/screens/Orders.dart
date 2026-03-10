@@ -33,7 +33,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
   void initState() {
     super.initState();
 
-    // 🚫 Block guest users
+
     if (isGuest || uid == null) {
       isLoading = false;
       return;
@@ -42,14 +42,14 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
     fetchAllBookings();
   }
 
-  /// ---------------- FETCH BOOKINGS ----------------
+
   void fetchAllBookings() async {
     setState(() => isLoading = true);
 
     normalBookings.clear();
     emiBookings.clear();
 
-    // NORMAL BOOKINGS
+
     final normalSnap = await _dbRef.child('bookings').child(uid!).get();
     if (normalSnap.exists) {
       final Map<dynamic, dynamic> data =
@@ -62,7 +62,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
       });
     }
 
-    // EMI BOOKINGS
+
     final emiSnap = await _dbRef.child('EMI_Bookings').child(uid!).get();
     if (emiSnap.exists) {
       final Map<dynamic, dynamic> data =
@@ -78,7 +78,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
     setState(() => isLoading = false);
   }
 
-  /// ---------------- CAR IMAGE ----------------
+
   String? getCarImage(String carName) {
     List<Car> allCars =
         sedanCars + suvCars + Coupe + Hatchback + Convertible;
@@ -86,7 +86,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
     return car?.images.isNotEmpty == true ? car!.images.first : null;
   }
 
-  /// ---------------- BOOKING SECTION ----------------
+
   Widget buildSection(
       String title, List<Map<dynamic, dynamic>> bookings, bool isEmi) {
     return Column(
@@ -225,7 +225,7 @@ class _OrderedCarScreenState extends State<OrderedCarScreen> {
         ),
       ),
 
-      /// ---------------- BODY ----------------
+
       body: isGuest || uid == null
           ? Center(
         child: Column(

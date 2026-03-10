@@ -237,7 +237,7 @@ class OrderDetailScreen extends StatelessWidget {
   final Map<dynamic, dynamic> bookingData;
   const OrderDetailScreen({super.key, required this.bookingData});
 
-  // ✨ NEW: Base64 decode
+
   Uint8List? _decodeBase64(String? data) {
     if (data == null || data.isEmpty) return null;
     try {
@@ -247,7 +247,7 @@ class OrderDetailScreen extends StatelessWidget {
     }
   }
 
-  // ✨ NEW: Document image widget (same UI style)
+
   Widget _buildDocument(
       BuildContext context, String label, String? base64Data) {
     final bytes = _decodeBase64(base64Data);
@@ -381,7 +381,7 @@ class OrderDetailScreen extends StatelessWidget {
                 "Order Date: ${formatDatePretty(bookingData["timestamp"])}"),
           ]),
 
-          // ✨ NEW CARD — NO UI CHANGE
+
           buildInfoCard("Uploaded Documents", [
             _buildDocument(context, "Aadhaar",
                 bookingData["aadhaarBase64"]),

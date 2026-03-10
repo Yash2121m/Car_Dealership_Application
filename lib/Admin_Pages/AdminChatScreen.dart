@@ -123,7 +123,7 @@ class _AdminChatScreenState extends State<AdminChatScreen> {
                   }).toList()
                     ..sort((a, b) => a['timestamp'].compareTo(b['timestamp']));
 
-                  // ✅ Mark unread messages from user as read
+
                   for (var msg in messages) {
                     if (msg['senderId'] == widget.userId && msg['isRead'] == false) {
                       _dbRef.child('messages')

@@ -21,7 +21,7 @@ class _InsuranceWarrantyScreenState extends State<InsuranceWarrantyScreen> {
   Map<String, String>? _insurance;
   Map<String, String>? _warranty;
 
-  // 🔹 Insurance Plans
+
   final List<Map<String, String>> insurancePlans = [
     {
       "title": "No Insurance",
@@ -49,7 +49,7 @@ class _InsuranceWarrantyScreenState extends State<InsuranceWarrantyScreen> {
     },
   ];
 
-  // 🔹 Warranty Plans
+
   final List<Map<String, String>> warrantyPlans = [
     {
       "title": "No Warranty",

@@ -8,7 +8,7 @@ import 'package:lottie/lottie.dart';
 import '../global/global.dart';
 import '../Assistance/ColorHelper.dart';
 import '../screens/login_screen.dart';
-import '../main.dart'; // flutterLocalNotificationsPlugin
+import '../main.dart';
 
 class MaintenanceReminderScreen extends StatefulWidget {
   const MaintenanceReminderScreen({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // 🚫 Block guest users
+
     if (isGuest || FirebaseAuth.instance.currentUser == null) {
       isLoading = false;
       return;
@@ -211,7 +211,7 @@ class _MaintenanceReminderScreenState extends State<MaintenanceReminderScreen>
         ),
       ),
 
-      /// ---------------- GUEST GUARD ----------------
+
       body: isGuest || FirebaseAuth.instance.currentUser == null
           ? Center(
         child: Column(

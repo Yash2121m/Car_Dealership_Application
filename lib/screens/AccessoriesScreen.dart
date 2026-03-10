@@ -10,7 +10,7 @@ class AccessoriesScreen extends StatefulWidget {
 }
 
 class _AccessoriesScreenState extends State<AccessoriesScreen> {
-  // Accessories data
+
   final List<Map<String, dynamic>> accessories = [
     {
       "name": "Rear Parking Sensors",
@@ -79,10 +79,10 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
     },
   ];
 
-  // Store selected items
+
   final Set<int> selectedIndexes = {};
 
-  // Calculate total
+
   int get totalPrice {
     return selectedIndexes.fold(0, (sum, index) => sum + accessories[index]["price"] as int);
   }

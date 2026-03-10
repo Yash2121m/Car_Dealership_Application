@@ -43,7 +43,7 @@ class _BottomNavAdmin extends State<BottomNavAdmin> {
     return Scaffold(
       extendBody: true,
       body: _navigationList[_selectedIndex],
-      // Creative Bottom Nav
+
       bottomNavigationBar: Container(
         margin: const EdgeInsets.all(12),
         decoration: BoxDecoration(

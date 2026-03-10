@@ -49,10 +49,10 @@ class _MainScreenState extends State<MainScreen> {
     BottomNavigationController controller = Get.put(BottomNavigationController());
 
     return Scaffold(
-      extendBody: true, // allows nav bar to float over body
+      extendBody: true,
       body: _navigationList[_selectedIndex],
-      // Floating Action Button for Chat
-      // Floating Action Button for Chat
+
+
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 70, right: 10),
         child: Container(
@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
             borderRadius: BorderRadius.circular(22),
             child: Stack(
               children: [
-                /// ✅ GLASS BLUR BACKGROUND
+
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                   child: Container(
@@ -92,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
 
-                /// ✅ MIRROR SHINE ON TOP
+
                 Positioned(
                   top: 0,
                   left: 0,
@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
 
-                /// ✅ BUTTON TAP AREA + LOTTIE
+
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -142,12 +142,12 @@ class _MainScreenState extends State<MainScreen> {
 
 
 
-      // Creative Bottom Nav
+
       bottomNavigationBar: SafeArea(
         bottom: true,
         child: Container(
-          width: screenWidth * 0.95,   // ✅ 95% screen width
-          height: screenHeight * 0.09, // ✅ 9% screen height
+          width: screenWidth * 0.95,
+          height: screenHeight * 0.09,
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
@@ -163,7 +163,7 @@ class _MainScreenState extends State<MainScreen> {
             borderRadius: BorderRadius.circular(30),
             child: Stack(
               children: [
-                /// ✅ BLUR GLASS BACKGROUND
+
                 BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                   child: Container(
@@ -173,7 +173,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
 
-                /// ✅ MIRROR GLOSS SHINE (TOP REFLECTION)
+
                 Positioned(
                   top: 0,
                   left: 0,
@@ -193,7 +193,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
 
-                /// ✅ BOTTOM NAV BAR
+
                 BottomNavigationBar(
                   backgroundColor: Colors.transparent,
                   elevation: 0,
@@ -222,7 +222,7 @@ class _MainScreenState extends State<MainScreen> {
 
                     return BottomNavigationBarItem(
                       label: isSelected ? labels[index] : "",
-                      icon: AnimatedScale(   // ✅ makes selected slightly bigger
+                      icon: AnimatedScale(
                         scale: isSelected ? 1.2 : 1.0,
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeOut,

@@ -82,10 +82,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
 
     final bookingId = widget.bookingId;
-    final userId = user!.uid;   // 👈 current user
+    final userId = user!.uid;
     final timestamp = DateTime.now().toIso8601String();
 
-    // ✅ Correct reference: bookings/userId/bookingId
+
     DatabaseReference bookingRef = FirebaseDatabase.instance
         .ref()
         .child("bookings")
@@ -98,10 +98,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
       "paymentTimestamp": timestamp,
     });
 
-    // ✅ return to BookingDetailScreen so it reloads
+
     Navigator.pop(context, true);
 
-    // optional: show receipt after returning
+
     Navigator.push(
       context,
       MaterialPageRoute(

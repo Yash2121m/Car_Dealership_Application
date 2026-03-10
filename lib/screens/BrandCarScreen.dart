@@ -1,4 +1,4 @@
-// screens/BrandCarsScreen.dart
+
 import 'package:flutter/material.dart';
 import '../Assistance/ColorHelper.dart';
 import '../Model/Car_Mode.dart';
@@ -12,7 +12,7 @@ class BrandCarsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Filter cars by selected brand
+
     List<Car> brandCars = allCars.where((car) => car.brand.toLowerCase() == brand.toLowerCase()).toList();
 
     return Scaffold(

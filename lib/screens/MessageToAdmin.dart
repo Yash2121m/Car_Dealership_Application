@@ -46,7 +46,7 @@ class _MessagingPageState extends State<MessagingPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 🚫 GUEST GUARD
+
     if (isGuest || currentUser == null) {
       return Scaffold(
         appBar: AppBar(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:lottie/lottie.dart'; // ✅ Import Lottie
+import 'package:lottie/lottie.dart';
 import '../Assistance/ColorHelper.dart';
 import 'AdminChatScreen.dart';
 
@@ -85,14 +85,14 @@ class _AdminMessagingPageState extends State<AdminMessagingPage> {
                 .where((chatId) => chatId.toString().contains(adminUid))
                 .toList();
 
-            // ✅ If no chats available
+
             if (userChatIds.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.asset(
-                      "images/empty_box.json", // 👉 you can add your own Lottie file
+                      "images/empty_box.json",
                       width: 200,
                       height: 200,
                     ),
@@ -114,7 +114,7 @@ class _AdminMessagingPageState extends State<AdminMessagingPage> {
               padding: const EdgeInsets.all(16),
               itemCount: userChatIds.length,
               itemBuilder: (context, index) {
-                // 🔹 existing chat list code here...
+
 
                 final chatId = userChatIds[index];
                 final parts = chatId.split("_");
@@ -250,7 +250,7 @@ class _AdminMessagingPageState extends State<AdminMessagingPage> {
             );
           }
 
-          // ✅ Show same Lottie loader here
+
           return Center(
             child: Lottie.asset(
               "images/Travel_app.json",

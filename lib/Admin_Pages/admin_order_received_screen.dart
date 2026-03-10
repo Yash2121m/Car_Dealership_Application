@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
-import 'package:lottie/lottie.dart'; // ✅ Import Lottie
+import 'package:lottie/lottie.dart';
 
 import '../Assistance/ColorHelper.dart';
 import 'dart:io';
@@ -24,7 +24,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
   final DatabaseReference bookingsRef =
   FirebaseDatabase.instance.ref().child("bookings");
   List<Map<String, dynamic>> allBookings = [];
-  bool isLoading = true; // ✅ Add loading state
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
       if (data == null) {
         setState(() {
           allBookings = [];
-          isLoading = false; // ✅ Stop loading
+          isLoading = false;
         });
         return;
       }
@@ -65,7 +65,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
 
       setState(() {
         allBookings = tempList;
-        isLoading = false; // ✅ Stop loading
+        isLoading = false;
       });
     });
   }
@@ -130,7 +130,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
       ),
     );
 
-    // Preview & Share
+
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save(),
     );
@@ -385,7 +385,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
       body: isLoading
           ? Center(
         child: Lottie.asset(
-          "images/Travel_app.json", // ✅ Your loader
+          "images/Travel_app.json",
           width: 250,
           height: 250,
         ),
@@ -396,7 +396,7 @@ class _AdminOrderReceivedScreenState extends State<AdminOrderReceivedScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Lottie.asset(
-                "images/empty_box.json", // optional empty-state animation
+                "images/empty_box.json",
                 width: 200,
                 height: 200,
               ),

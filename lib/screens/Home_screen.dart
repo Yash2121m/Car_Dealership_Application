@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     bool darkTheme = false;
 
     return Scaffold(
-      // Custom Gradient AppBar
+
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
 
-      // Creative Drawer
+
       drawer: Drawer(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
 
-      // Body
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 20),
         child: Column(
@@ -279,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
-            // Popular Brands
+
             _sectionTitle("Popular Brands", darkTheme),
             const SizedBox(height: 10),
             SizedBox(
@@ -301,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 20),
 
-            // Most Sold Cars
+
             _sectionTitle("Most Sold Vehicles", darkTheme),
             const SizedBox(height: 10),
             SizedBox(
@@ -335,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       onTap: () {
         if (requiresLogin && isGuest) {
-          // 🔒 Redirect guest to login
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  // Glass-morphism Search Bar
+
   Widget _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
@@ -397,7 +397,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Brand Icon with animation
+
   Widget _buildBrandIcon(String imagePath, String brandName, bool darkTheme) {
     return InkWell(
       onTap: () {
@@ -438,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Creative Vehicle Card
+
   Widget _buildVehicleCard({required Car car}) {
     return InkWell(
       onTap: () {
