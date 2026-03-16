@@ -256,12 +256,6 @@ Password: 123456
 
 ---
 
-## 📄 Resume-Ready Project Description
-
-**AI Car Dealer Mobile Application (Flutter)**
-Designed and developed a feature-rich Flutter-based car dealership application enabling users to browse cars, compare models, calculate EMIs, book test drives, purchase vehicles, and manage post-purchase services. Integrated an AI-powered chat assistant for real-time user support and guidance. Implemented complete booking flows including document upload, insurance & warranty selection, accessories add-ons, order tracking, and car maintenance reminders with a modern gradient-based UI.
-
----
 
 ## 🙌 Author
 
