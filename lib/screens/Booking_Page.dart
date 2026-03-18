@@ -10,6 +10,7 @@ import '../Model/user_model.dart';
 import 'InsuranceWarrantyPage.dart';
 import 'AccessoriesScreen.dart';
 import 'login_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
 class BookingPage extends StatefulWidget {
   final Car car;
@@ -88,12 +89,21 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<void> _pickDocument(String type) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
+      final tempFile = File(pickedFile.path);
+
+      // 👉 Get permanent directory
+      final dir = await getApplicationDocumentsDirectory();
+      final newPath = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      // 👉 Copy file to permanent location
+      final savedFile = await tempFile.copy(newPath);
+
       setState(() {
-        final file = File(pickedFile.path);
-        if (type == 'aadhaar') _aadhaarFile = file;
-        if (type == 'pan') _panFile = file;
-        if (type == 'salary') _salarySlipFile = file;
+        if (type == 'aadhaar') _aadhaarFile = savedFile;
+        if (type == 'pan') _panFile = savedFile;
+        if (type == 'salary') _salarySlipFile = savedFile;
       });
     }
   }
@@ -181,9 +191,11 @@ class _BookingPageState extends State<BookingPage> {
 
         Navigator.pop(context);
       }
-    } catch (_) {
+    } catch (e) {
+      print("BOOKING ERROR: $e"); // 👈 THIS IS KEY
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Booking failed')),
+        SnackBar(content: Text('Booking failed: $e')),
       );
     }
 

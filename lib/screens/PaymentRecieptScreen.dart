@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -80,25 +81,84 @@ class PaymentReceiptScreen extends StatelessWidget {
     final pdf = pw.Document();
     final date = DateTime.parse(data['paymentTimestamp']);
 
+    final font = await PdfGoogleFonts.notoSansRegular();
+
+    final logoBytes = await rootBundle.load('images/logo3.png');
+    final logo = pw.MemoryImage(logoBytes.buffer.asUint8List());
+
     pdf.addPage(
       pw.Page(
+        theme: pw.ThemeData.withFont(base: font),
         build: (pw.Context context) => pw.Padding(
           padding: const pw.EdgeInsets.all(20),
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text("AutoVerse Receipt", style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(height: 20),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Row(
+                    children: [
+                      pw.Image(logo, width: 60, height: 60),
+                      pw.SizedBox(width: 10),
+                      pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            "AutoVerse",
+                            style: pw.TextStyle(
+                              fontSize: 20,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColors.blue,
+                            ),
+                          ),
+                          pw.Text(
+                            "Drive Your Dreams",
+                            style: pw.TextStyle(
+                              fontSize: 10,
+                              color: PdfColors.grey700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  pw.Text(
+                    "RECEIPT",
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.green,
+                    ),
+                  ),
+                ],
+              ),
+
+              pw.SizedBox(height: 10),
               pw.Divider(),
+
+              pw.SizedBox(height: 10),
+
               _buildPdfRow("Booking ID", data['bookingId']),
               _buildPdfRow("Car Name", data['carName']),
               _buildPdfRow("User Email", data['email']),
               _buildPdfRow("Amount Paid", "₹${data['amountPaid']}"),
               _buildPdfRow("Status", "Success"),
               _buildPdfRow("Date", DateFormat.yMMMd().add_jm().format(date)),
+
               pw.Divider(),
               pw.SizedBox(height: 20),
-              pw.Text("Thank you for your payment!", style: pw.TextStyle(fontSize: 16)),
+
+              pw.Center(
+                child: pw.Text(
+                  "Thank you for choosing AutoVerse",
+                  style: pw.TextStyle(
+                    fontSize: 14,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
