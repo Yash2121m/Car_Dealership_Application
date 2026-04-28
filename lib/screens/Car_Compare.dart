@@ -124,37 +124,39 @@ class _CompareCarsScreenState extends State<CompareCarsScreen> {
                   style: TextStyle(color: Colors.black87, fontSize: 16),
                 ),
               )
-                  : SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(ColorSys.purple1),
-                    columnSpacing: 24,
-                    columns: [
-                      const DataColumn(
-                        label: Text(
-                          'Feature',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                        ),
-                      ),
-                      ...selectedCars
-                          .map(
-                            (car) => DataColumn(
-                          label: Column(
-                            children: [
-                              Text(car.name,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold, color: Colors.black87)),
-                              Text("₹${car.totalPrice.toStringAsFixed(0)}",
-                                  style: const TextStyle(color: Colors.black54, fontSize: 12)),
-                            ],
+              : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: DataTable(
+                      headingRowColor: WidgetStateProperty.all(ColorSys.purple1),
+                      columnSpacing: 24,
+                      columns: [
+                        const DataColumn(
+                          label: Text(
+                            'Feature',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
                           ),
                         ),
-                      )
-                          .toList(),
-                    ],
-                    rows: _buildComparisonRows(selectedCars),
+                        ...selectedCars
+                            .map(
+                              (car) => DataColumn(
+                            label: Column(
+                              children: [
+                                Text(car.name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold, color: Colors.black87)),
+                                Text("₹${car.totalPrice.toStringAsFixed(0)}",
+                                    style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                              ],
+                            ),
+                          ),
+                        ).toList(),
+                      ],
+                      rows: _buildComparisonRows(selectedCars),
+                    ),
                   ),
                 ),
               ),
